@@ -1,11 +1,11 @@
 /*
 * Copyright(C), 2007-2008, XUPT Univ.	
-* ÓÃÀý±àºÅ£ºTTMS_UC_01	 
+* ç”¨ä¾‹ç¼–å·ï¼šTTMS_UC_01	 
 * File name: Studio_UI.c			  
-* Description : ÑÝ³öÌüÓÃÀý½çÃæ²ã	
+* Description : æ¼”å‡ºåŽ…ç”¨ä¾‹ç•Œé¢å±‚	
 * Author:   XUPT  		 
 * Version:  v.1 	 
-* Date: 	2015Äê4ÔÂ22ÈÕ	
+* Date: 	2015å¹´4æœˆ22æ—¥	
 */
 
 #include "../View/Studio_UI.h"
@@ -20,10 +20,10 @@ static const int STUDIO_PAGE_SIZE = 5;
 #include <stdio.h>
 
 /*
-±êÊ¶·û£ºTTMS_SCU_Studio_UI_MgtEnt 
-º¯Êý¹¦ÄÜ£º½çÃæ²ã¹ÜÀíÑÝ³öÌüµÄÈë¿Úº¯Êý£¬ÏÔÊ¾µ±Ç°µÄÑÝ³öÌüÊý¾Ý£¬²¢Ìá¹©ÑÝ³öÌüÊý¾ÝÌí¼Ó¡¢ÐÞ¸Ä¼°É¾³ý¹¦ÄÜ²Ù×÷µÄÈë¿Ú¡£
-²ÎÊýËµÃ÷£ºÎÞ¡£
-·µ »Ø Öµ£ºÎÞ¡£
+æ ‡è¯†ç¬¦ï¼šTTMS_SCU_Studio_UI_MgtEnt 
+å‡½æ•°åŠŸèƒ½ï¼šç•Œé¢å±‚ç®¡ç†æ¼”å‡ºåŽ…çš„å…¥å£å‡½æ•°ï¼Œæ˜¾ç¤ºå½“å‰çš„æ¼”å‡ºåŽ…æ•°æ®ï¼Œå¹¶æä¾›æ¼”å‡ºåŽ…æ•°æ®æ·»åŠ ã€ä¿®æ”¹åŠåˆ é™¤åŠŸèƒ½æ“ä½œçš„å…¥å£ã€‚
+å‚æ•°è¯´æ˜Žï¼šæ— ã€‚
+è¿” å›ž å€¼ï¼šæ— ã€‚
 */
 void Studio_UI_MgtEntry(void) {
 	int i, id;
@@ -37,7 +37,7 @@ void Studio_UI_MgtEntry(void) {
 	paging.offset = 0;
 	paging.pageSize = STUDIO_PAGE_SIZE;
 
-	//ÔØÈëÊý¾Ý
+	//è½½å…¥æ•°æ®
 	paging.totalRecords = Studio_Srv_FetchAll(head);
 	Paging_Locate_FirstPage(head, paging);
 
@@ -50,7 +50,7 @@ void Studio_UI_MgtEntry(void) {
 				"Columns Count", "Seats Count");
 		printf(
 				"------------------------------------------------------------------\n");
-		//ÏÔÊ¾Êý¾Ý
+		//æ˜¾ç¤ºæ•°æ®
 		Paging_ViewPage_ForEach(head, paging, studio_node_t, pos, i){
 			printf("%5d  %18s  %10d  %10d  %10d\n", pos->data.id,
 					pos->data.name, pos->data.rowsCount, pos->data.colsCount,
@@ -75,7 +75,7 @@ void Studio_UI_MgtEntry(void) {
 		switch (choice) {
 		case 'a':
 		case 'A':
-			if (Studio_UI_Add()) //ÐÂÌí¼Ó³É¹¦£¬Ìøµ½×îºóÒ»Ò³ÏÔÊ¾
+			if (Studio_UI_Add()) //æ–°æ·»åŠ æˆåŠŸï¼Œè·³åˆ°æœ€åŽä¸€é¡µæ˜¾ç¤º
 			{
 				paging.totalRecords = Studio_Srv_FetchAll(head);
 				Paging_Locate_LastPage(head, paging, studio_node_t);
@@ -85,7 +85,7 @@ void Studio_UI_MgtEntry(void) {
 		case 'D':
 			printf("Input the ID:");
 			scanf("%d", &id);
-			if (Studio_UI_Delete(id)) {	//´ÓÐÂÔØÈëÊý¾Ý
+			if (Studio_UI_Delete(id)) {	//ä»Žæ–°è½½å…¥æ•°æ®
 				paging.totalRecords = Studio_Srv_FetchAll(head);
 				List_Paging(head, paging, studio_node_t);
 			}
@@ -94,7 +94,7 @@ void Studio_UI_MgtEntry(void) {
 		case 'U':
 			printf("Input the ID:");
 			scanf("%d", &id);
-			if (Studio_UI_Modify(id)) {	//´ÓÐÂÔØÈëÊý¾Ý
+			if (Studio_UI_Modify(id)) {	//ä»Žæ–°è½½å…¥æ•°æ®
 				paging.totalRecords = Studio_Srv_FetchAll(head);
 				List_Paging(head, paging, studio_node_t);
 			}
@@ -122,15 +122,15 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		}
 	} while (choice != 'r' && choice != 'R');
-	//ÊÍ·ÅÁ´±í¿Õ¼ä
+	//é‡Šæ”¾é“¾è¡¨ç©ºé—´
 	List_Destroy(head, studio_node_t);
 }
 
 /*
-±êÊ¶·û£ºTTMS_SCU_Studio_UI_Add 
-º¯Êý¹¦ÄÜ£ºÓÃÓÚÏòÏµÍ³ÖÐÌí¼ÓÒ»¸öÐÂÑÝ³öÌüÊý¾Ý¡£
-²ÎÊýËµÃ÷£ºÎÞ¡£
-·µ »Ø Öµ£ºÕûÐÍ£¬³É¹¦Ìí¼ÓÐÂÑÝ³öÌüµÄ¸öÊý¡£
+æ ‡è¯†ç¬¦ï¼šTTMS_SCU_Studio_UI_Add 
+å‡½æ•°åŠŸèƒ½ï¼šç”¨äºŽå‘ç³»ç»Ÿä¸­æ·»åŠ ä¸€ä¸ªæ–°æ¼”å‡ºåŽ…æ•°æ®ã€‚
+å‚æ•°è¯´æ˜Žï¼šæ— ã€‚
+è¿” å›ž å€¼ï¼šæ•´åž‹ï¼ŒæˆåŠŸæ·»åŠ æ–°æ¼”å‡ºåŽ…çš„ä¸ªæ•°ã€‚
 */
 int Studio_UI_Add(void) {
 	studio_t rec;
@@ -165,10 +165,10 @@ int Studio_UI_Add(void) {
 }
 
 /*
-±êÊ¶·û£ºTTMS_SCU_Studio_UI_Mod
-º¯Êý¹¦ÄÜ£ºÓÃÓÚÐÞ¸ÄÏµÍ³ÖÐÏÖ´æµÄÒ»¸öÑÝ³öÌüÊý¾Ý¡£
-²ÎÊýËµÃ÷£ºidÎªÕûÐÍ£¬ÊÇÐèÒªÐÞ¸ÄµÄÑÝ³öÌüID¡£
-·µ »Ø Öµ£ºÕûÐÍ£¬±íÊ¾ÊÇ·ñ³É¹¦ÐÞ¸ÄÁËÑÝ³öÌüµÄ±êÖ¾¡£
+æ ‡è¯†ç¬¦ï¼šTTMS_SCU_Studio_UI_Mod
+å‡½æ•°åŠŸèƒ½ï¼šç”¨äºŽä¿®æ”¹ç³»ç»Ÿä¸­çŽ°å­˜çš„ä¸€ä¸ªæ¼”å‡ºåŽ…æ•°æ®ã€‚
+å‚æ•°è¯´æ˜Žï¼šidä¸ºæ•´åž‹ï¼Œæ˜¯éœ€è¦ä¿®æ”¹çš„æ¼”å‡ºåŽ…IDã€‚
+è¿” å›ž å€¼ï¼šæ•´åž‹ï¼Œè¡¨ç¤ºæ˜¯å¦æˆåŠŸä¿®æ”¹äº†æ¼”å‡ºåŽ…çš„æ ‡å¿—ã€‚
 */
 int Studio_UI_Modify(int id) {
 	studio_t rec;
@@ -195,7 +195,7 @@ int Studio_UI_Modify(int id) {
 	List_Init(list, seat_node_t);
 	seatcount = Seat_Srv_FetchByRoomID(list, rec.id);
 	if (seatcount) {
-		do {			//Èç¹û×ùÎ»ÎÄ¼þÖÐÒÑÓÐ×ùÎ»ÐÅÏ¢£¬Ôò¸üÐÂµÄÐÐÁÐ±ØÐë±ÈÒÔÇ°´ó£¬·ñÔò²»ÔÊÐí¸ü¸Ä
+		do {			//å¦‚æžœåº§ä½æ–‡ä»¶ä¸­å·²æœ‰åº§ä½ä¿¡æ¯ï¼Œåˆ™æ›´æ–°çš„è¡Œåˆ—å¿…é¡»æ¯”ä»¥å‰å¤§ï¼Œå¦åˆ™ä¸å…è®¸æ›´æ”¹
 			printf("Row Count of Seats should >= [%d]:", rec.rowsCount);
 			scanf("%d", &(newrow));
 			printf("Column Count of Seats should >= [%d]:", rec.colsCount);
@@ -226,17 +226,17 @@ int Studio_UI_Modify(int id) {
 }
 
 /*
-±êÊ¶·û£ºTTMS_SCU_Studio_UI_Del
-º¯Êý¹¦ÄÜ£ºÓÃÓÚÉ¾³ýÏµÍ³ÖÐÏÖ´æµÄÒ»¸öÑÝ³öÌüÊý¾Ý¡£
-²ÎÊýËµÃ÷£ºidÎªÕûÐÍ£¬ÊÇÐèÒªÉ¾³ýµÄÑÝ³öÌüID¡£
-·µ »Ø Öµ£ºÕûÐÍ£¬±íÊ¾ÊÇ·ñ³É¹¦É¾³ýÁËÑÝ³öÌüµÄ±êÖ¾¡£
+æ ‡è¯†ç¬¦ï¼šTTMS_SCU_Studio_UI_Del
+å‡½æ•°åŠŸèƒ½ï¼šç”¨äºŽåˆ é™¤ç³»ç»Ÿä¸­çŽ°å­˜çš„ä¸€ä¸ªæ¼”å‡ºåŽ…æ•°æ®ã€‚
+å‚æ•°è¯´æ˜Žï¼šidä¸ºæ•´åž‹ï¼Œæ˜¯éœ€è¦åˆ é™¤çš„æ¼”å‡ºåŽ…IDã€‚
+è¿” å›ž å€¼ï¼šæ•´åž‹ï¼Œè¡¨ç¤ºæ˜¯å¦æˆåŠŸåˆ é™¤äº†æ¼”å‡ºåŽ…çš„æ ‡å¿—ã€‚
 */
 int Studio_UI_Delete(int id) {
 
 	int rtn = 0;
 
 	if (Studio_Srv_DeleteByID(id)) {
-		//ÔÚÉ¾³ý·ÅÓ³ÌüÊ±£¬Í¬Ê±¸ù¾Ý·ÅÓ³ÌüidÉ¾³ý×ùÎ»ÎÄ¼þÖÐµÄ×ùÎ»
+		//åœ¨åˆ é™¤æ”¾æ˜ åŽ…æ—¶ï¼ŒåŒæ—¶æ ¹æ®æ”¾æ˜ åŽ…idåˆ é™¤åº§ä½æ–‡ä»¶ä¸­çš„åº§ä½
 		if (Seat_Srv_DeleteAllByRoomID(id))
 			printf("The seats of the room deleted successfully!\n");
 		printf(
