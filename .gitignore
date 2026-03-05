@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+/build
+
+>>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
 # Prerequisites
 *.d
 
@@ -52,4 +57,8 @@ Mkfile.old
 dkms.conf
 
 # debug information files
+<<<<<<< HEAD
 *.dwo
+=======
+*.dwo
+>>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
