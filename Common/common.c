@@ -1,10 +1,10 @@
 /*
-* Copyright(C), 2007-2008, XUPT Univ.	 
-* File name: common.c			 
-* Description : ͨ�ú�������	 
-* Author:   XUPT  		 
-* Version:  v.1 	 
-* Date: 	2015��4��22��		 
+* Copyright(C), 2007-2008, XUPT Univ.
+* File name: common.c
+* Description : 通用函数定义
+* Author:   XUPT
+* Version:  v.1
+* Date: 	2015年4月22日
 */
 
 #include "common.h"
@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <time.h>
 
-//���ַ���str�͵�ת��Ϊ��д�ַ������������ַ���ͷָ��
+//将字符串str就地转换为大写字符串，并返回字符串头指针
 char *Str2Upper(char *str) {
 	if (NULL == str)
 		return NULL;
@@ -28,7 +28,7 @@ char *Str2Upper(char *str) {
 	}
 }
 
-//���ַ���str�͵�ת��ΪСд�ַ������������ַ���ͷָ��
+//将字符串str就地转换为小写字符串，并返回字符串头指针
 char *Str2Lower(char *str) {
 	if (NULL == str)
 		return NULL;
@@ -43,7 +43,7 @@ char *Str2Lower(char *str) {
 	}
 }
 
-//�Ƚ�����dt1, dt2�Ĵ�С����ȷ���0��dt1<dt2����-1������1
+//比较日期dt1, dt2的大小。相等返回0，dt1<dt2返回-1，否则1
 int DateCmp(user_date_t dt1, user_date_t dt2) {
 	if (dt1.year < dt2.year)
 		return -1;
@@ -58,11 +58,11 @@ int DateCmp(user_date_t dt1, user_date_t dt2) {
 		return 1;
 }
 
-//��ȡϵͳ��ǰ����
+//获取系统当前日期
 user_date_t DateNow() {
 	user_date_t curDate;
-	time_t now;         //ʵ����time_t�ṹ
-	struct tm *timeNow;         //ʵ����tm�ṹָ��
+	time_t now;         //实例化time_t结构
+	struct tm *timeNow;         //实例化tm结构指针
 	time(&now);
 	timeNow = localtime(&now);
 	curDate.year=timeNow->tm_year+1900;
@@ -75,8 +75,8 @@ user_date_t DateNow() {
 //��ȡϵͳ��ǰʱ��
 user_time_t TimeNow(){
 	user_time_t curTime;
-	time_t now;         //ʵ����time_t�ṹ
-	struct tm *timeNow;         //ʵ����tm�ṹָ��
+	time_t now;         //实例化time_t结构
+	struct tm *timeNow;         //实例化tm结构指针
 	time(&now);
 	timeNow = localtime(&now);
 	curTime.hour=timeNow->tm_hour;
