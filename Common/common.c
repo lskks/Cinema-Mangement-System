@@ -72,7 +72,7 @@ user_date_t DateNow() {
 	return curDate;
 }
 
-//��ȡϵͳ��ǰʱ��
+// 获取当前时间
 user_time_t TimeNow(){
 	user_time_t curTime;
 	time_t now;         //实例化time_t结构

@@ -2,6 +2,8 @@
 =======
 /build
 
+*.xml
+/cmake-build-debug/*
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
 # Prerequisites
 *.d
