@@ -1,0 +1,10 @@
+{
+    "terminal.integrated.suggest.enabled": true,
+    "clangd.arguments": [
+        "--completion-style=detailed",
+        "--function-arg-placeholders=false",
+        "--header-insertion=never",
+        "--pch-storage=memory",
+        "--compile-commands-dir=./build"
+    ]
+}

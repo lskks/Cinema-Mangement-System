@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "MaiAccount_UI.h"
 
 void MaiAccount_UI_MgtEntry(void)
@@ -8,7 +9,7 @@ void MaiAccount_UI_MgtEntry(void)
 
     printf("Pleas enter the new password for user %s: ", cdata.username);
     scanf("%s", cpwd);
-    cdata.password = cpwd;
+    strcpy(cdata.password, cpwd);
 
     Account_Srv_Modify(&data);
 

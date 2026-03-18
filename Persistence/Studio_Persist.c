@@ -188,7 +188,7 @@ int Studio_Perst_SelectAll(studio_list_t list) {
 	List_Free(list, studio_node_t);
 
 	FILE *fp = fopen(STUDIO_DATA_FILE, "rb");
-	if (NULL == fp) { //�ļ�������
+	if (NULL == fp) {
 		return 0;
 	}
 

@@ -1,0 +1,5 @@
+CompileFlags:
+  Add: [-xc, -std=c17, -I/home/ljhkss/Code/tlpi_code/lib]
+
+Diagnostics:
+  UnusedIncludes: None
