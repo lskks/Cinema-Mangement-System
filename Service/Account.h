@@ -1,5 +1,9 @@
+#pragma once
+
 #ifndef ACCOUNT_H_
 #define ACCOUNT_H_
+
+#define ACCOUNT_PAGE_SIZE 5
 
 typedef enum
 {
@@ -20,7 +24,7 @@ typedef struct
 /**
  * @var a global user to save system user information
  */
-account_t gl_CurUser = {0, USR_ANOMY, "Anonymous", ""};
+extern account_t gl_CurUser;
 
 typedef struct account_node
 {

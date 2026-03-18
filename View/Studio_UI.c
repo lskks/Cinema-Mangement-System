@@ -69,7 +69,7 @@ void Studio_UI_MgtEntry(void) {
 				"\n==================================================================\n");
 		printf("Your Choice:");
 		fflush(stdin);
-		scanf("%c", &choice);
+		scanf(" %c", &choice);
 		fflush(stdin);
 
 		switch (choice) {

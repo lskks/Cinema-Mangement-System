@@ -5,6 +5,8 @@
 // #include "Account_Persist.h"
 #include "../Common/List.h"
 
+account_t gl_CurUser = {0, USR_ANOMY, "Anonymous", ""};
+
 void Account_Srv_InitSys()
 {
     if(!Account_Perst_CheckAccFile())

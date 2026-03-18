@@ -41,7 +41,7 @@ int Account_Perst_Update(account_t *data)
     FILE *fp = fopen(ACCOUNT_DATA_FILE, "rb+"); // 以读写方式打开二进制文件
     if (NULL == fp)
     {
-        fprintf(STDERR_FILENO, "Cannot open file %s!\n", ACCOUNT_DATA_FILE);
+        fprintf(stderr, "Cannot open file %s!\n", ACCOUNT_DATA_FILE);
         return 0;
     }
 

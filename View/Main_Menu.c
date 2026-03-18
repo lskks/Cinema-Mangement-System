@@ -10,8 +10,11 @@
 #include "../View/Main_Menu.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../View/Studio_UI.h"
+#include "../View/Account_UI.h"
+#include "common.h"
 
 //系统主菜单 
 void Main_Menu(void) {
@@ -30,10 +33,12 @@ void Main_Menu(void) {
 		printf("\n==================================================================\n");
 		printf("Please input your choice:");
 		fflush(stdin);
-		choice = getchar();
+		scanf(" %c", &choice);
+		fflush(stdin);
 		switch (choice) {
 		case 'S':
 		case 's':
+			system(CLEAR);
 			Studio_UI_MgtEntry();
 			break;
 /*		case 'P':
@@ -55,11 +60,12 @@ void Main_Menu(void) {
 		case 'N':
 		case 'n':
 			SalesAanalysis_UI_MgtEntry();
-			break;
+			break;*/
 		case 'A':
 		case 'a':
+			system(CLEAR);
 			Account_UI_MgtEntry();
-			break;*/
+			break;
 		}
 	} while ('E' != choice && 'e' != choice);
 }

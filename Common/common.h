@@ -9,6 +9,12 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#if defined(_WIN32) || defined(_WIN64)
+#define CLEAR "cls"
+#else
+#define CLEAR "clear"
+#endif
+
 //日期结构体 
 typedef struct {
 	int year;
