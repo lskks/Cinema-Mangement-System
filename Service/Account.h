@@ -4,6 +4,8 @@
 #define ACCOUNT_H_
 
 #define ACCOUNT_PAGE_SIZE 5
+#define ACCOUNT_NAME_LEN 30
+#define ACCOUNT_PWD_LEN 30
 
 typedef enum
 {
@@ -16,9 +18,9 @@ typedef enum
 typedef struct
 {
     int id;
-    account_type_t type;
-    char* username;
-    char* password;
+    account_type_t  type;
+    char username[ACCOUNT_NAME_LEN];
+    char password[ACCOUNT_PWD_LEN];
 } account_t;
 
 /**

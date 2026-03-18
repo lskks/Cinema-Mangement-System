@@ -8,6 +8,8 @@
 
 int Account_Perst_CheckAccFile();
 
+int Account_Perst_MigrateLegacyData(void);
+
 int Account_Perst_Insert(account_t* data);
 
 int Account_Perst_Update(account_t* data);

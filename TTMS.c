@@ -10,12 +10,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <locale.h>
 // #include <io.h>
-#include "./View/Main_Menu.h"9
+#include "./View/Main_Menu.h"
 
 //系统运行入口函数main
 int main(void) {
 	setvbuf(stdout, NULL, _IONBF, 0);
+	setlocale(LC_ALL, "");
 	Main_Menu();
 	return EXIT_SUCCESS;
 }

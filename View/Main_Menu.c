@@ -16,6 +16,13 @@
 #include "../View/Account_UI.h"
 #include "common.h"
 
+static void clear_input_buffer(void)
+{
+	int ch;
+	while ((ch = getchar()) != '\n' && ch != EOF) {
+	}
+}
+
 //系统主菜单 
 void Main_Menu(void) {
 	char choice;
@@ -32,9 +39,8 @@ void Main_Menu(void) {
 		printf("[E]xist.\n");
 		printf("\n==================================================================\n");
 		printf("Please input your choice:");
-		fflush(stdin);
-		scanf(" %c", &choice);
-		fflush(stdin);
+		scanf("%c", &choice);
+		clear_input_buffer();
 		switch (choice) {
 		case 'S':
 		case 's':

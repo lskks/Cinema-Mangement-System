@@ -33,7 +33,7 @@ int Studio_Perst_Insert(studio_t *data) {
 
 	////以下是新设计方案方案添加的代码
 	////以下是新设计方案方案添加的代码
-	long key = EntKey_Perst_GetNewKeys(STUDIO_KEY_NAME, 1); //Ϊ���ݳ��������ȡ
+	long key = EntKey_Perst_GetNewKeys(STUDIO_KEY_NAME, 1);
 	if(key<=0)			//主键分配失败，直接返回
 		return 0;
 	data->id = key;		//赋给新对象带回到UI层

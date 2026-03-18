@@ -9,15 +9,17 @@ account_t gl_CurUser = {0, USR_ANOMY, "Anonymous", ""};
 
 void Account_Srv_InitSys()
 {
-    if(!Account_Perst_CheckAccFile())
+    Account_Perst_MigrateLegacyData();
+
+    if (Account_Perst_CheckAccFile())
     {
         return;
     }
-    account_t data_admin;
-    data_admin.username = "admin";
+    account_t data_admin = {0};
     data_admin.id = 0;
     data_admin.type = USR_ADMIN;
-    data_admin.password = "123456";
+    strncpy(data_admin.username, "admin", ACCOUNT_NAME_LEN - 1);
+    strncpy(data_admin.password, "123456", ACCOUNT_PWD_LEN - 1);
     Account_Srv_Add(&data_admin);
 }
 
