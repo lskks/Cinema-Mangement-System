@@ -3,6 +3,7 @@
 #include "EntityKey_Persist.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #define ACCOUNT_KEY_NAME "account"
 
@@ -135,4 +136,47 @@ int Account_Perst_SelectAll(account_list_t list)
     }
     fclose(fp);
     return recCount;
+}
+
+/**
+ * @brief 
+ *      Find the account by name
+ * @param username 
+ * @param buf 
+ * @return int if found return 1, else return 0
+ */
+int Account_Perst_SelectByName(char *username, account_t *buf)
+{
+    if (NULL == username || NULL == buf)
+    {
+        return 0;
+    }
+
+    if (strlen(username) > 30)
+    {
+        return 0;
+    }
+
+    FILE *fp = fopen(ACCOUNT_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        printf("Cannot open file %s!\n", ACCOUNT_DATA_FILE);
+        return 0;
+    }
+
+    account_t data;
+    int found = 0;
+
+    while (fread(&data, sizeof(account_t), 1, fp) == 1)
+    {
+        if (strcmp(data.username, username) == 0)
+        {
+            memcpy(buf, &data, sizeof(account_t));
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(fp);
+    return found;
 }

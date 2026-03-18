@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "MaiAccount_UI.h"
+#include "../Service/Account.h"
 
 void MaiAccount_UI_MgtEntry(void)
 {
@@ -11,7 +12,7 @@ void MaiAccount_UI_MgtEntry(void)
     scanf("%s", cpwd);
     strcpy(cdata.password, cpwd);
 
-    Account_Srv_Modify(&data);
+    Account_Srv_Modify(&cdata);
 
     printf("This is the account management entry.\n");
 }

@@ -11,6 +11,8 @@
 /.cache
 *.d
 *.py
+.clangd
+.clang-format
 
 # Object files
 *.o

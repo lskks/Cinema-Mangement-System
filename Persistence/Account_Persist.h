@@ -16,4 +16,6 @@ int Account_Perst_RemById(int id);
 
 int Account_Perst_SelectAll(account_list_t list);
 
+int Account_Perst_SelectByName(char* username, account_t* acc);
+
 #endif

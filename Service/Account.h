@@ -13,8 +13,8 @@ typedef struct
 {
     int id;
     account_type_t type;
-    char username[30];
-    char password[30];
+    char* username;
+    char* password;
 } account_t;
 
 /**
@@ -31,16 +31,16 @@ typedef struct account_node
 
 void Account_Srv_InitSys();
 
-int Account_Srv_Verify(char username[], char pwd[]);
+int Account_Srv_Verify(char* username, char* pwd);
 
-int Account_Srv_Add(const account_t* data);
+int Account_Srv_Add(account_t* data);
 
-int Account_Srv_Modify(const account_t* data);
+int Account_Srv_Modify(account_t* data);
 
 int Account_Srv_DeleteByID(int userID);
 
 int Account_Srv_FetchAll(account_list_t list);
 
-int Account_Srv_FindByUserName(account_list_t list, char userName[]);
+account_node_t* Account_Srv_FindByUserName(account_list_t list, char* userName);
 
 #endif
