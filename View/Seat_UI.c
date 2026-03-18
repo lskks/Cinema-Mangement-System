@@ -15,6 +15,7 @@
 #include "../Common/List.h"
 #include <stdio.h>
 
+static const int SEAT_PAGE_SIZE = 5;
 /*
 表识符：TTMS_SCU_Seat_UI_S2C
 函数功能：根据座位状态获取界面显示符号。
@@ -22,8 +23,12 @@
 返 回 值：字符型，表示座位的界面显示符号。
 */
 inline char Seat_UI_Status2Char(seat_status_t status) {
-
-	return '#';
+	if (status == SEAT_GOOD)
+		return '#';
+	else if (status == SEAT_BROKEN)
+		return  '~';
+	else if (status == SEAT_NONE)
+		return ' ';
 }
 
 /*
@@ -33,7 +38,12 @@ inline char Seat_UI_Status2Char(seat_status_t status) {
 返 回 值：seat_status_t类型，表示座位的状态。
 */
 inline seat_status_t Seat_UI_Char2Status(char statusChar) {
-	return SEAT_NONE;
+	if (statusChar == '#')
+		return SEAT_GOOD;
+	else if (statusChar == '~')
+		return  SEAT_BROKEN;
+	else if (statusChar == ' ')
+		return SEAT_NONE;
 }
 
 /*
@@ -43,6 +53,23 @@ inline seat_status_t Seat_UI_Char2Status(char statusChar) {
 返 回 值：无。
 */ 
 void Seat_UI_MgtEntry(int roomID) {
+	studio_t room;
+	seat_list_t head;
+	char choice;
+	Pagination_t paging;
+
+	if (Studio_Srv_FetchByID(roomID, &room) == 0)
+		return;
+
+	List_Init(head, seat_node_t);
+	paging.offset = 0;
+	paging.pageSize = SEAT_PAGE_SIZE;
+
+	if (Seat_Srv_FetchByRoomID(head, roomID) == 0)
+	{
+		Seat_Srv_RoomInit(head, roomID, room.rowsCount, room.colsCount);
+		Studio_Srv_Modify(&room);
+	}
 
 }
 
@@ -53,7 +80,7 @@ void Seat_UI_MgtEntry(int roomID) {
 		 第二个参数rowsCount为整型，表示座位所在行号，第三个参数colsCount为整型，表示座位所在列号。
 返 回 值：整型，表示是否成功添加了座位的标志。
 */
-int Seat_UI_Add(seat_list_t list, int roomID, int row, int column) {  //����һ����λ
+int Seat_UI_Add(seat_list_t list, int roomID, int row, int column) {
 
 	return 0;
 }

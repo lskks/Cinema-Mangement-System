@@ -135,7 +135,7 @@ int Studio_Perst_DeleteByID(int ID) {
 	fclose(fpTarg);
 	fclose(fpSour);
 
-	//ɾ����ʱ�ļ�
+
 	remove(STUDIO_DATA_TEMP_FILE);
 	return found;
 }
@@ -144,7 +144,7 @@ int Studio_Perst_DeleteByID(int ID) {
 标识符：TTMS_SCU_Studio_Perst_SelectByID
 函数功能：用于从文件中载入一个演出厅的数据。
 参数说明：第一个参数ID为整型，表示需要载入数据的演出厅ID；第二个参数buf为studio_t指针，指向载入演出厅数据的指针。
-返 回 值：整型，表示是否成功载入了演出厅的标志。
+返 回 值：整型，表示是否成功载入了演出厅的标志。success 1, failed 0
 */
 int Studio_Perst_SelectByID(int ID, studio_t *buf) {
 	assert(NULL!=buf);

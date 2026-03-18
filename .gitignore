@@ -1,6 +1,7 @@
 <<<<<<< HEAD
 =======
 /build
+/.idea/*
 
 *.xml
 /cmake-build-debug/*

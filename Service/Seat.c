@@ -72,11 +72,7 @@ inline int Seat_Srv_DeleteAllByRoomID(int roomID){
        return 0;
 }
 
-/*
-函数功能：根据给定演出厅的行、列数初始化演出厅的所有座位数据，并将每个座位结点按行插入座位链表。
-参数说明：第一个参数list为seat_list_t类型指针，指向座位链表头指针，第二个参数rowsCount为整型，表示座位所在行号，第三个参数colsCount为整型，表示座位所在列号。
-返 回 值：整型，表示是否成功初始化了演出厅的所有座位。
-*/
+// success 1, failed 0
 int Seat_Srv_FetchByRoomID(seat_list_t list, int roomID){
        // 请补充完整
        return 0;

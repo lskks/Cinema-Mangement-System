@@ -64,7 +64,7 @@ void Studio_UI_MgtEntry(void) {
 		printf(
 				"******************************************************************\n");
 		printf(
-				"[P]revPage|[N]extPage | [A]dd|[D]elete|[U]pdate | [S]eat | [R]eturn");
+				"[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [S]eat | [R]eturn");
 		printf(
 				"\n==================================================================\n");
 		printf("Your Choice:");
