@@ -4,7 +4,7 @@
 #include "../Common/List.h"
 #include <stdlib.h>
 #include <stdio.h>
-//#include<unistd.h>
+#include <unistd.h>
 #include <assert.h>
 
 static const char PLAY_DATA_FILE[] = "Play.dat"; 
@@ -136,7 +136,7 @@ int Play_Perst_SelectAll(play_list_t list) {
 	List_Free(list,play_node_t );
 
 	FILE* fp = fopen(PLAY_DATA_FILE, "rb");
-	if (NULL == fp) { //�ļ�������
+	if (NULL == fp) {
 		return 0;
 	}
 

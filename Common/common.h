@@ -9,10 +9,14 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#include <stdio.h>
+
 #if defined(_WIN32) || defined(_WIN64)
 #define CLEAR "cls"
+#define PAUSE "pause"
 #else
 #define CLEAR "clear"
+#define PAUSE "read -p 'Press Enter to continue...'"
 #endif
 
 //日期结构体 
@@ -46,5 +50,8 @@ user_date_t DateNow();
 
 //获取系统当前时间
 user_time_t TimeNow();
+
+
+void clear_input_buffer(void);
 
 #endif /* COMMON_H_ */

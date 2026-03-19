@@ -5,14 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-static void clear_input_buffer(void)
-{
-    int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF)
-    {
-    }
-}
-
 int SysLogin()
 {
     Account_Srv_InitSys();
