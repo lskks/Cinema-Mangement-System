@@ -1,6 +1,6 @@
+#ifndef PLAY_H
+#define PLAY_H
 
 
-#ifndef VIEW_PLAY_H
-#define VIEW_PLAY_H
 
 #endif
