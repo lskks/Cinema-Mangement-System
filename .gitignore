@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /build
 /.idea/*
@@ -24,11 +25,22 @@
 *.ilk
 *.map
 *.exp
+=======
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+>>>>>>> Play
 
 # Precompiled Headers
 *.gch
 *.pch
 
+<<<<<<< HEAD
 # Libraries
 *.lib
 *.a
@@ -40,11 +52,34 @@
 *.so
 *.so.*
 *.dylib
+=======
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+>>>>>>> Play
 
 # Executables
 *.exe
 *.out
 *.app
+<<<<<<< HEAD
 *.i*86
 *.x86_64
 *.hex
@@ -70,3 +105,13 @@ dkms.conf
 =======
 *.dwo
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
+=======
+
+# debug information files
+*.dwo
+/out/build/x64-Debug/Testing/Temporary
+/out/build/x64-Debug/CMakeFiles/TTMS.dir
+/out/build/x64-Debug/CMakeFiles
+/out/build/x64-Debug/.cmake/api/v1/reply
+/out/build/x64-Debug
+>>>>>>> Play
