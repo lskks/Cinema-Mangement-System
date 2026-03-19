@@ -1,0 +1,31 @@
+# 忽略 CLion 的本地配置目录 [citation:5][citation:6][citation:8]
+.idea/
+
+# 忽略 CMake 编译生成目录（可能有多个，如 debug/release）[citation:5][citation:7]
+cmake-build-*/
+
+# 忽略编译产生的中间文件和目标文件 [citation:5][citation:6]
+# 对象文件
+*.o
+*.obj
+# 静态库
+*.a
+*.lib
+# 动态库
+*.dll
+*.so
+*.dylib
+# 可执行文件
+*.exe
+*.out
+*.app
+
+# 忽略 macOS 的系统文件（如果你用 Mac）[citation:7]
+.DS_Store
+
+# 忽略 CMake 生成的缓存和配置文件 [citation:5]
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
