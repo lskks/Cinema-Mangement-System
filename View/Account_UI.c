@@ -240,8 +240,7 @@ void Account_UI_MgtEntry()
             system(CLEAR);
             printf("Input the user name you want to query: ");
             scanf("%s", name);
-            paging.totalRecords = Account_Srv_FetchAll(list);
-            List_Paging(list, paging, account_node_t);
+            Account_UI_Query(list, name);
             break;
         case 'p':
         case 'P':
