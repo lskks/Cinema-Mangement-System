@@ -54,18 +54,18 @@ void Main_Menu(void) {
 		case 'Q':
 		case 'q':
 			Queries_Menu();
-			break;
+			break;*/
 		case 'T':
 		case 't':
 			Sale_UI_MgtEntry();
 			break;
-		case 'R':
+/*		case 'R':
 		case 'r':
 			Sale_UI_ReturnTicket();
 			break;
 		case 'N':
 		case 'n':
-			SalesAanalysis_UI_MgtEntry();
+			SalesAnalysis_UI_MgtEntry();
 			break;*/
 		case 'A':
 		case 'a':
