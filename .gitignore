@@ -1,28 +1,20 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+<<<<<<<<< Temporary merge branch 1
 <<<<<<< HEAD
 =======
 /build
 /.idea/*
-=======
-=======
-/build
->>>>>>> seat
+/.vscode/*
 
 *.xml
 /cmake-build-debug/*
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
 # Prerequisites
-<<<<<<< HEAD
 
 /.cache
 *.d
 *.py
 .clangd
 .clang-format
-=======
-*.d
->>>>>>> seat
 
 # Object files
 *.o
@@ -34,8 +26,7 @@
 *.ilk
 *.map
 *.exp
-<<<<<<< HEAD
-=======
+=========
 # Prerequisites
 *.d
 
@@ -44,18 +35,13 @@
 *.lo
 *.o
 *.obj
->>>>>>> Play
-=======
->>>>>>> seat
+>>>>>>>>> Temporary merge branch 2
 
 # Precompiled Headers
 *.gch
 *.pch
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> seat
+<<<<<<<<< Temporary merge branch 1
 # Libraries
 *.lib
 *.a
@@ -67,8 +53,7 @@
 *.so
 *.so.*
 *.dylib
-<<<<<<< HEAD
-=======
+=========
 # Linker files
 *.ilk
 
@@ -89,18 +74,13 @@
 *.la
 *.a
 *.lib
->>>>>>> Play
-=======
->>>>>>> seat
+>>>>>>>>> Temporary merge branch 2
 
 # Executables
 *.exe
 *.out
 *.app
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> seat
+<<<<<<<<< Temporary merge branch 1
 *.i*86
 *.x86_64
 *.hex
@@ -126,8 +106,7 @@ dkms.conf
 =======
 *.dwo
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
-<<<<<<< HEAD
-=======
+=========
 
 # debug information files
 *.dwo
@@ -136,6 +115,4 @@ dkms.conf
 /out/build/x64-Debug/CMakeFiles
 /out/build/x64-Debug/.cmake/api/v1/reply
 /out/build/x64-Debug
->>>>>>> Play
-=======
->>>>>>> seat
+>>>>>>>>> Temporary merge branch 2
