@@ -1,6 +1,8 @@
 add_library(ServiceLib
     Seat.c
     Studio.c
+        Ticket.c
+        Ticket.h
 )
 
 target_include_directories(ServiceLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
