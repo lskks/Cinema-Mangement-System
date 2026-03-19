@@ -39,3 +39,8 @@
 
 # debug information files
 *.dwo
+/out/build/x64-Debug/Testing/Temporary
+/out/build/x64-Debug/CMakeFiles/TTMS.dir
+/out/build/x64-Debug/CMakeFiles
+/out/build/x64-Debug/.cmake/api/v1/reply
+/out/build/x64-Debug
