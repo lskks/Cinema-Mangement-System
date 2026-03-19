@@ -7,13 +7,14 @@
 * Da
 */
 
-#include "../View/Main_Menu.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../View/Main_Menu.h"
 #include "../View/Studio_UI.h"
 #include "../View/Account_UI.h"
+#include "../View/Sale_UI.h"
 #include "common.h"
 
 static void clear_input_buffer(void)
@@ -57,7 +58,7 @@ void Main_Menu(void) {
 			break;*/
 		case 'T':
 		case 't':
-			Sale_UI_MgtEntry();
+			Sale_UI_MgtEnt();
 			break;
 /*		case 'R':
 		case 'r':
