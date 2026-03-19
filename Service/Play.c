@@ -26,7 +26,7 @@ int Play_Srv_FetchAll(play_list_t list) {
 
 play_node_t* Play_Srv_FindByID(play_list_t list, int ID) {
 	assert(NULL != list);
-	studio_node_t* ptr = list->next;
+	play_node_t* ptr = list->next;
 	while (ptr != list) {
 		if (ptr->data.id == ID)
 			return ptr;

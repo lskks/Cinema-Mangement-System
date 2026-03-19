@@ -1,7 +1,7 @@
 #include "Play_Persist.h"
-#include "../Service/play.h"
+#include "../Service/Play.h"
 #include "EntityKey_Persist.h"	 
-#include "../common/list.h"
+#include "../Common/List.h"
 #include <stdlib.h>
 #include <stdio.h>
 //#include<unistd.h>
@@ -136,7 +136,7 @@ int Play_Perst_SelectAll(play_list_t list) {
 	List_Free(list,play_node_t );
 
 	FILE* fp = fopen(PLAY_DATA_FILE, "rb");
-	if (NULL == fp) { //ÎÄ¼þ²»´æÔÚ
+	if (NULL == fp) { //ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		return 0;
 	}
 
