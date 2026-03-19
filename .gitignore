@@ -1,19 +1,28 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /build
 /.idea/*
+=======
+=======
+/build
+>>>>>>> seat
 
 *.xml
 /cmake-build-debug/*
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
 # Prerequisites
+<<<<<<< HEAD
 
 /.cache
 *.d
 *.py
 .clangd
 .clang-format
+=======
+*.d
+>>>>>>> seat
 
 # Object files
 *.o
@@ -25,6 +34,7 @@
 *.ilk
 *.map
 *.exp
+<<<<<<< HEAD
 =======
 # Prerequisites
 *.d
@@ -35,12 +45,17 @@
 *.o
 *.obj
 >>>>>>> Play
+=======
+>>>>>>> seat
 
 # Precompiled Headers
 *.gch
 *.pch
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> seat
 # Libraries
 *.lib
 *.a
@@ -52,6 +67,7 @@
 *.so
 *.so.*
 *.dylib
+<<<<<<< HEAD
 =======
 # Linker files
 *.ilk
@@ -74,12 +90,17 @@
 *.a
 *.lib
 >>>>>>> Play
+=======
+>>>>>>> seat
 
 # Executables
 *.exe
 *.out
 *.app
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> seat
 *.i*86
 *.x86_64
 *.hex
@@ -105,6 +126,7 @@ dkms.conf
 =======
 *.dwo
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
+<<<<<<< HEAD
 =======
 
 # debug information files
@@ -115,3 +137,5 @@ dkms.conf
 /out/build/x64-Debug/.cmake/api/v1/reply
 /out/build/x64-Debug
 >>>>>>> Play
+=======
+>>>>>>> seat

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../Common/List.h"
-#include "Seat.h"
+#include "../Service/Seat.h"
 #include "../Persistence/Seat_Persist.h"
 
 /*

@@ -47,7 +47,7 @@ void Seat_Srv_SortSeatList(seat_list_t list );
 
 /*
 标识符：TTMS_SCU_Seat_Srv_AddSortedList
-功能：将节点node加入到已排序链表list中*/
+功能：将结点node加入到已排序链表list中*/
 void Seat_Srv_AddToSoftedList(seat_list_t list , seat_node_t *node);
 
 /*
@@ -93,7 +93,7 @@ int Seat_Srv_FetchValidByRoomID(seat_list_t list, int roomID);
 int Seat_Srv_FetchByID(int ID, seat_t *buf);
 
 /*
-标识符：TTMS_SCU_Seat_Srv_FetchByRoomID 
+标识符：标识符：TTMS_SCU_Seat_Srv_FetchByRoomID 
 功能：根据演出厅ID获取所有座位服务
 */
 int Seat_Srv_FetchByRoomID(seat_list_t list, int roomID);
@@ -112,7 +112,7 @@ seat_node_t * Seat_Srv_FindByRowCol(seat_list_t list, int row, int column);
 
 /*
 标识符：TTMS_SCU_Studio_Srv_FindByID
-功能：根据ID在链表中获取座位服务*/
+功能：根据ID在链表中获取座位服务*/ 
 seat_node_t * Seat_Srv_FindByID(seat_list_t list, int seatID);
 
 
