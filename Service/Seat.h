@@ -7,24 +7,23 @@
 * Version:  v.1 	 
 * Date: 	2015年4月22日	
 */
-
 #ifndef SEAT_H_
 #define SEAT_H_
 
 //座位状态 
 typedef enum{
-	SEAT_NONE=0,			//空位
-	SEAT_GOOD=1,			//有座位
+	SEAT_NONE=0,			//无座位
+	SEAT_GOOD=1,			//好的座位
 	SEAT_BROKEN=9			//损坏的座位
 }seat_status_t;
 
 //座位数据结构 
 typedef struct {
 	int id;					//座位id
-	int roomID;				//所在演出厅id
+	int roomID;				//所属演出厅id
 	int row;           		//座位行号
     int column;        		//座位列号
-    seat_status_t status;	//座位在该行的状态，0表示没有座位，1表示有座位。扩展2可表示座位坏了
+    seat_status_t status;	//座位在该行的状态：0表示没有座位，1表示好座位，扩展2可表示座位损坏
 } seat_t;
 
 

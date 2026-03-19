@@ -15,14 +15,9 @@
 #include "../View/Studio_UI.h"
 #include "../View/Account_UI.h"
 #include "../View/Sale_UI.h"
+#include "../View/Play_UI.h"
 #include "common.h"
 
-static void clear_input_buffer(void)
-{
-	int ch;
-	while ((ch = getchar()) != '\n' && ch != EOF) {
-	}
-}
 
 //系统主菜单 
 void Main_Menu(void) {
@@ -48,11 +43,11 @@ void Main_Menu(void) {
 			system(CLEAR);
 			Studio_UI_MgtEntry();
 			break;
-/*		case 'P':
+		case 'P':
 		case 'p':
-			Play_UI_MgtEntry(0);
+			Play_UI_MgtEntry();
 			break;
-		case 'Q':
+/*		case 'Q':
 		case 'q':
 			Queries_Menu();
 			break;*/

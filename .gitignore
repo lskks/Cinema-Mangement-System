@@ -1,5 +1,12 @@
+<<<<<<< HEAD
+=======
+<<<<<<<<< Temporary merge branch 1
+<<<<<<< HEAD
+=======
+>>>>>>> play
 /build
 /.idea/*
+/.vscode/*
 
 *.xml
 /cmake-build-debug/*
@@ -21,11 +28,22 @@
 *.ilk
 *.map
 *.exp
+=========
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+>>>>>>>>> Temporary merge branch 2
 
 # Precompiled Headers
 *.gch
 *.pch
 
+<<<<<<<<< Temporary merge branch 1
 # Libraries
 *.lib
 *.a
@@ -37,11 +55,34 @@
 *.so
 *.so.*
 *.dylib
+=========
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+>>>>>>>>> Temporary merge branch 2
 
 # Executables
 *.exe
 *.out
 *.app
+<<<<<<<<< Temporary merge branch 1
 *.i*86
 *.x86_64
 *.hex
@@ -67,3 +108,13 @@ dkms.conf
 =======
 *.dwo
 >>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
+=========
+
+# debug information files
+*.dwo
+/out/build/x64-Debug/Testing/Temporary
+/out/build/x64-Debug/CMakeFiles/TTMS.dir
+/out/build/x64-Debug/CMakeFiles
+/out/build/x64-Debug/.cmake/api/v1/reply
+/out/build/x64-Debug
+>>>>>>>>> Temporary merge branch 2

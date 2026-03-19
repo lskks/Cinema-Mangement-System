@@ -85,6 +85,12 @@ user_time_t TimeNow(){
 	return curTime;
 }
 
+void clear_input_buffer(void) {
+	int ch;
+	while ((ch = getchar()) != '\n' && ch != EOF) {
+	}
+}
+
 /*
  *
  *
@@ -107,3 +113,4 @@ user_time_t TimeNow(){
  }
 
  */
+

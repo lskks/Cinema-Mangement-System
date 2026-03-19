@@ -7,14 +7,6 @@
 
 #include <stdio.h>
 
-static void clear_input_buffer(void)
-{
-    int ch;
-    while ((ch = getchar()) != '\n' && ch != EOF)
-    {
-    }
-}
-
 void Sale_UI_MgtEnt()
 {
     int i;

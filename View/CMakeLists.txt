@@ -2,7 +2,7 @@ add_library(ViewLib
     Main_Menu.c
     Seat_UI.c
     Studio_UI.c
-    Play.c
+    Play_UI.c
     Account_UI.c
     MaiAccount_UI.c
     Sale_UI.c
