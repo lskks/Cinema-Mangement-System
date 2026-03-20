@@ -15,7 +15,7 @@
 #include "../View/Studio_UI.h"
 #include "../View/Account_UI.h"
 #include "../View/Play_UI.h"
-#include "common.h"
+#include "../Common/common.h"
 
 
 //系统主菜单 

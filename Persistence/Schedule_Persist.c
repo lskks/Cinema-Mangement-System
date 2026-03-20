@@ -1,0 +1,82 @@
+#include "../Service/Schedule.h"
+#include "../Common/List.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <assert.h>
+
+static const char SCHEDULE_DATA_FILE[] = "Schedule.dat";
+
+int Schedule_Perst_SelectAll(schedule_list_t list) {
+    schedule_node_t *newNode;
+    schedule_t data;
+    int recCount = 0;
+
+    assert(NULL != list);
+
+    List_Free(list, schedule_node_t);
+
+    // 判断文件是否存在
+    if (access(SCHEDULE_DATA_FILE, 0) != 0) {
+        return 0;
+    }
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "rb");
+    if (NULL == fp) {
+        return 0;
+    }
+
+    while (!feof(fp)) {
+        if (fread(&data, sizeof(schedule_t), 1, fp)) {
+            newNode = (schedule_node_t*)malloc(sizeof(schedule_node_t));
+            if (!newNode) {
+                printf("Warning, Memory OverFlow!!!\nCannot Load more data into memory!!!\n");
+                break;
+            }
+            newNode->data = data;
+            List_AddTail(list, newNode);
+            recCount++;
+        }
+    }
+
+    fclose(fp);
+    return recCount;
+}
+
+int Schedule_Perst_SelectByPlay(schedule_list_t list, int play_id) {
+    schedule_node_t *newNode;
+    schedule_t data;
+    int recCount = 0;
+
+    assert(NULL != list);
+
+    List_Free(list, schedule_node_t);
+
+    // 判断文件是否存在
+    if (access(SCHEDULE_DATA_FILE, 0) != 0) {
+        return 0;
+    }
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "rb");
+    if (NULL == fp) {
+        return 0;
+    }
+
+    while (!feof(fp)) {
+        if (fread(&data, sizeof(schedule_t), 1, fp)) {
+            if (data.play_id == play_id) {
+                newNode = (schedule_node_t*)malloc(sizeof(schedule_node_t));
+                if (!newNode) {
+                    printf("Warning, Memory OverFlow!!!\nCannot Load more data into memory!!!\n");
+                    break;
+                }
+                newNode->data = data;
+                List_AddTail(list, newNode);
+                recCount++;
+            }
+        }
+    }
+
+    fclose(fp);
+    return recCount;
+}

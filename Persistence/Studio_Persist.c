@@ -135,7 +135,6 @@ int Studio_Perst_DeleteByID(int ID) {
 	fclose(fpTarg);
 	fclose(fpSour);
 
-
 	remove(STUDIO_DATA_TEMP_FILE);
 	return found;
 }

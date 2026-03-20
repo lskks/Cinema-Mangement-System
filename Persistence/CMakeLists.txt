@@ -4,6 +4,8 @@ add_library(PersistenceLib
     Studio_Persist.c
     Account_Persist.c
     Play_Persist.c
+    Schedule_Persist.c
+    # Ticket_Persist.c
 )
 
 target_include_directories(PersistenceLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
