@@ -14,6 +14,7 @@
 #include "../View/Main_Menu.h"
 #include "../View/Studio_UI.h"
 #include "../View/Account_UI.h"
+#include "../View/Sale_UI.h"
 #include "../View/Play_UI.h"
 #include "../Common/common.h"
 
@@ -49,18 +50,18 @@ void Main_Menu(void) {
 /*		case 'Q':
 		case 'q':
 			Queries_Menu();
-			break;
+			break;*/
 		case 'T':
 		case 't':
-			Sale_UI_MgtEntry();
+			Sale_UI_MgtEnt();
 			break;
-		case 'R':
+/*		case 'R':
 		case 'r':
 			Sale_UI_ReturnTicket();
 			break;
 		case 'N':
 		case 'n':
-			SalesAanalysis_UI_MgtEntry();
+			SalesAnalysis_UI_MgtEntry();
 			break;*/
 		case 'A':
 		case 'a':

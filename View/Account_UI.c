@@ -198,7 +198,6 @@ void Account_UI_MgtEntry()
         case 'a':
         case 'A':
             system(CLEAR);
-            system(CLEAR);
             if (Account_UI_Add(list))
             {
                 paging.totalRecords += 1;

@@ -1,13 +1,15 @@
+<<<<<<< HEAD
+=======
 <<<<<<<<< Temporary merge branch 1
 <<<<<<< HEAD
 =======
+>>>>>>> play
 /build
 /.idea/*
 /.vscode/*
 
 *.xml
 /cmake-build-debug/*
->>>>>>> 6a73685 (Initial commit: Add Cinema Management System project files)
 # Prerequisites
 
 /.cache

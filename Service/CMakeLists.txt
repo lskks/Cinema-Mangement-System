@@ -2,6 +2,7 @@ add_library(ServiceLib
     Seat.c
     Studio.c
     Account.c
+    Sale.c
     Play.c
     Schedule.c
 )

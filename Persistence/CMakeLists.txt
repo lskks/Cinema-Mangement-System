@@ -3,6 +3,7 @@ add_library(PersistenceLib
     Seat_Persist.c
     Studio_Persist.c
     Account_Persist.c
+    Sale_Persist.c
     Play_Persist.c
     Schedule_Persist.c
     # Ticket_Persist.c
