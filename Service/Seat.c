@@ -161,8 +161,6 @@ int Seat_Srv_FetchByRoomID(seat_list_t list, int roomID){
 
 int Seat_Srv_FetchValidByRoomID(seat_list_t list, int roomID)
 {
-       // �벹������
-   
     if (list == NULL) {
         printf("����ͷָ��Ϊ��\n");
         return -1;
