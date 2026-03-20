@@ -37,4 +37,6 @@ int Sale_Srv_FetchBySchID(int id, ticket_list_t list);
 
 ticket_node_t* Sale_Srv_FetchBySeatID(int seat_id, ticket_list_t list);
 
+int Sale_Srv_FetchAll(sale_list_t list);
+
 #endif /* SALE_H_ */

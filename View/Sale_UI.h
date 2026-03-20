@@ -8,7 +8,7 @@
 
 void Sale_UI_MgtEnt();
 
-void Sale_UI_ShowSheduler();
+void Sale_UI_ShowSheduler(int playID);
 
 int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list);
 

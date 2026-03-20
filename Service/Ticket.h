@@ -1,18 +1,11 @@
 #ifndef TICKET_H_
 #define TICKET_H_
-
-#define TICKET_DATA_FILE "ticket.dat"
-#define TICKET_DATA_TEMP_FILE "ticket.tmp"
-
-typedef enum
-{
-    TICKET_AVL = 0,
-    TICKET_SOLD = 1,
-    TICKET_RESV = 9,
+typedef enum {
+    TICKET_AVL = 0,    // 待售
+    TICKET_SOLD = 1,   // 已售
+    TICKET_RESV = 9    // 预留
 } ticket_status_t;
-
-typedef struct
-{
+typedef struct {
     int id;
     int schedule_id;
     int seat_id;
@@ -20,15 +13,21 @@ typedef struct
     ticket_status_t status;
 } ticket_t;
 
-typedef struct ticket_node 
-{
+// 双向链表
+typedef struct ticket_node {
     ticket_t data;
-    struct ticket_node* prev;
-    struct ticket_node* next;
+    struct ticket_node *next;
+    struct ticket_node *prev;
 } ticket_node_t, *ticket_list_t;
 
-int Ticket_Srv_FetchByID(int ID, ticket_t* buf);
+// TTMS_SCU_Ticket_Srv_GenBatch - 批量生成演出票
+int Ticket_Srv_GenBatch(int schedule_id);
 
-int Ticket_Srv_Modify(const ticket_t* data);
+// TTMS_SCU_Ticket_Srv_DeleteBatch - 批量删除演出票
+int Ticket_Srv_DeleteBatch(int schedule_id);
 
-#endif
+int Ticket_Srv_FetchByID(int id, ticket_t* buf);
+
+int Ticket_Srv_FetchAll(ticket_list_t list);
+
+#endif /* TICKET_H_ */

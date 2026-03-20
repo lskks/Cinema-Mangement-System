@@ -1,11 +1,17 @@
-#ifndef TTMS_TICKET_PERSIST_H
-#define TTMS_TICKET_PERSIST_H
+#ifndef TICKET_PERSIST_H_
+#define TICKET_PERSIST_H_
 
 #include "../Service/Ticket.h"
 
-int Ticket_Perst_SelByID(int id, ticket_t * buf);
+// TTMS_SCU_Ticket_Perst_Insert - 存储演出票（批量）
+int Ticket_Perst_Insert(ticket_list_t list, int schedule_id);
 
-int Ticket_Perst_Update(const ticket_t *data);
+// TTMS_SCU_Ticket_Perst_Rem - 根据演出计划ID去除演出票
+int Ticket_Perst_Rem(int schedule_id);
 
+int Ticket_Perst_SelByID(int id, ticket_t* buf);
 
-#endif
+int Ticket_Perst_SelAll(ticket_list_t list);
+
+extern const char TICKET_DATA_FILE[];
+#endif /* TICKET_PERSIST_H_ */

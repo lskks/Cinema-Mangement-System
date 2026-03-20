@@ -5,6 +5,7 @@ add_library(ServiceLib
     Sale.c
     Play.c
     Schedule.c
+    Ticket.c
 )
 
 target_include_directories(ServiceLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

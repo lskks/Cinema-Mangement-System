@@ -16,8 +16,30 @@
 #include "../View/Account_UI.h"
 #include "../View/Sale_UI.h"
 #include "../View/Play_UI.h"
+#include "../View/Ticket_UI.h"
 #include "../Common/common.h"
 
+void Queries_Menu()
+{
+	char choice;
+	do { 
+		printf("\n==================================================================\n");
+		printf("**************** Queries Menu ****************\n");
+		printf("[T]icket Query.\n");
+		printf("[R]eturn.\n");
+		printf("\n==================================================================\n");
+		printf("Please input your choice:");
+		scanf("%c", &choice);
+		switch (choice)
+		{
+		case 'T':
+		case 't':
+			Ticket_UI_Query();
+			break;
+		}
+		clear_input_buffer();
+	}while (choice != 'r' || choice != 'R');
+}
 
 //系统主菜单 
 void Main_Menu(void) {
@@ -47,10 +69,10 @@ void Main_Menu(void) {
 		case 'p':
 			Play_UI_MgtEntry();
 			break;
-/*		case 'Q':
+		case 'Q':
 		case 'q':
 			Queries_Menu();
-			break;*/
+			break;
 		case 'T':
 		case 't':
 			Sale_UI_MgtEnt();

@@ -13,4 +13,6 @@ int Tickect_Perst_Update(const ticket_t* data);
 
 int Ticket_Srv_SelBySchedule(int id, ticket_list_t list);
 
+int Sale_Perst_SeclectAll(sale_list_t list);
+
 #endif

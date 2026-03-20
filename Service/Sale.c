@@ -27,3 +27,8 @@ ticket_node_t* Sale_Srv_FetchBySeatID(int seat_id, ticket_list_t list)
     }
     return NULL;
 }
+
+int Sale_Srv_FetchAll(sale_list_t list)
+{
+    return Sale_Perst_SeclectAll(list);
+}

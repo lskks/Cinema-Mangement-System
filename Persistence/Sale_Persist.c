@@ -3,6 +3,7 @@
 
 #include "Sale_Persist.h"
 #include "EntityKey_Persist.h"
+#include "Ticket_Persist.h"
 
 int Sale_Perst_Insert(sale_t* data)
 {
@@ -88,4 +89,36 @@ int Ticket_Srv_SelBySchedule(int id, ticket_list_t list)
     }
     fclose(fp);
     return count;
+}
+
+int Sale_Perst_SeclectAll(sale_list_t list)
+{
+	sale_node_t *newNode;
+	sale_t data;
+	int recCount = 0;
+
+	assert(NULL!=list);
+
+	List_Free(list, sale_node_t);
+
+	FILE *fp = fopen(SALE_DATA_FILE, "rb");
+	if (NULL == fp) {
+		return 0;
+	}
+
+	while (!feof(fp)) {
+		if (fread(&data, sizeof(sale_t), 1, fp)) {
+			newNode = (sale_node_t*) malloc(sizeof(sale_node_t));
+			if (!newNode) {
+				printf(
+						"Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+				break;
+			}
+			newNode->data = data;
+			List_AddTail(list, newNode);
+			recCount++;
+		}
+	}
+	fclose(fp);
+	return recCount;
 }

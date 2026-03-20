@@ -43,7 +43,7 @@ int Schedule_Perst_SelectAll(schedule_list_t list) {
     return recCount;
 }
 
-int Schedule_Perst_SelectByPlay(schedule_list_t list, int play_id) {
+int Schedule_Perst_SelectByID(schedule_list_t list, int play_id) {
     schedule_node_t *newNode;
     schedule_t data;
     int recCount = 0;

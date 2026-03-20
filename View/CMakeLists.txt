@@ -7,6 +7,7 @@ add_library(ViewLib
     MaiAccount_UI.c
     Schedule_UI.c
     Sale_UI.c
+    Ticket_UI.c
 )
 
 target_include_directories(ViewLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

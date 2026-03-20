@@ -29,4 +29,6 @@ int Schedule_Srv_FetchAll(schedule_list_t list);
 // 功能：根据剧目ID获取演出计划服务
 int Schedule_Srv_FetchByPlay(schedule_list_t list, int play_id);
 
+int Schedule_Srv_FetchByID(int id, schedule_t *buf);
+
 #endif /* SCHEDULE_H_ */
