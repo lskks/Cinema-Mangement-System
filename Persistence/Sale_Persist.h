@@ -15,4 +15,6 @@ int Ticket_Srv_SelBySchedule(int id, ticket_list_t list);
 
 int Sale_Perst_SeclectAll(sale_list_t list);
 
+int Sale_Perst_SelByID(sale_list_t list, int usrID);
+
 #endif

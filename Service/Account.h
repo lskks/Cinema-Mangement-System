@@ -47,6 +47,8 @@ int Account_Srv_DeleteByID(int userID);
 
 int Account_Srv_FetchAll(account_list_t list);
 
+int Account_Srv_FetchByName(char* userName, account_t* data);
+
 account_node_t* Account_Srv_FindByUserName(account_list_t list, char* userName);
 
 #endif

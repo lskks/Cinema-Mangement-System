@@ -1,14 +1,14 @@
 #include "../Common/List.h"
 #include <stdio.h>
 
-#include "Sale_Persist.h"
 #include "EntityKey_Persist.h"
+#include "Sale_Persist.h"
 #include "Ticket_Persist.h"
 
-int Sale_Perst_Insert(sale_t* data)
+int Sale_Perst_Insert(sale_t *data)
 {
     long key = EntKey_Perst_GetNewKeys("sale", 1);
-    FILE* fp = fopen(SALE_DATA_FILE, "ab");
+    FILE *fp = fopen(SALE_DATA_FILE, "ab");
 
     if (key <= 0)
     {
@@ -24,17 +24,17 @@ int Sale_Perst_Insert(sale_t* data)
         return -1;
     }
 
-    int rtn = fwrite(data, sizeof(sale_t), 1,fp);
+    int rtn = fwrite(data, sizeof(sale_t), 1, fp);
 
     return rtn;
 }
 
-int Tickect_Perst_Update(const ticket_t* data)
+int Tickect_Perst_Update(const ticket_t *data)
 {
     ticket_t rec;
     int rtn = -1;
 
-    FILE* fp = fopen(TICKET_DATA_FILE, "rb+");
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb+");
 
     if (fp == NULL)
     {
@@ -62,9 +62,9 @@ int Ticket_Srv_SelBySchedule(int id, ticket_list_t list)
 {
     int count = 0;
     List_Init(list, ticket_node_t);
-    ticket_t* data;
+    ticket_t *data;
 
-    FILE* fp = fopen(TICKET_DATA_FILE, "rb");
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
 
     if (fp == NULL)
     {
@@ -76,7 +76,7 @@ int Ticket_Srv_SelBySchedule(int id, ticket_list_t list)
     {
         if (data->schedule_id == id)
         {
-            ticket_node_t* newNode = (ticket_node_t*)malloc(sizeof(ticket_node_t));
+            ticket_node_t *newNode = (ticket_node_t *)malloc(sizeof(ticket_node_t));
             if (!newNode)
             {
                 printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
@@ -93,32 +93,70 @@ int Ticket_Srv_SelBySchedule(int id, ticket_list_t list)
 
 int Sale_Perst_SeclectAll(sale_list_t list)
 {
-	sale_node_t *newNode;
-	sale_t data;
-	int recCount = 0;
+    sale_node_t *newNode;
+    sale_t data;
+    int recCount = 0;
 
-	assert(NULL!=list);
+    assert(NULL != list);
 
-	List_Free(list, sale_node_t);
+    List_Free(list, sale_node_t);
 
-	FILE *fp = fopen(SALE_DATA_FILE, "rb");
-	if (NULL == fp) {
-		return 0;
-	}
+    FILE *fp = fopen(SALE_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        return 0;
+    }
 
-	while (!feof(fp)) {
-		if (fread(&data, sizeof(sale_t), 1, fp)) {
-			newNode = (sale_node_t*) malloc(sizeof(sale_node_t));
-			if (!newNode) {
-				printf(
-						"Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
-				break;
-			}
-			newNode->data = data;
-			List_AddTail(list, newNode);
-			recCount++;
-		}
-	}
-	fclose(fp);
-	return recCount;
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(sale_t), 1, fp))
+        {
+            newNode = (sale_node_t *)malloc(sizeof(sale_node_t));
+            if (!newNode)
+            {
+                printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+                break;
+            }
+            newNode->data = data;
+            List_AddTail(list, newNode);
+            recCount++;
+        }
+    }
+    fclose(fp);
+    return recCount;
+}
+
+int Sale_Perst_SelByID(sale_list_t list, int usrID)
+{
+    sale_node_t *newNode;
+    sale_t data;
+    int recCount = 0;
+
+    assert(NULL != list);
+
+    List_Free(list, sale_node_t);
+
+    FILE *fp = fopen(SALE_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        return 0;
+    }
+
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(sale_t), 1, fp))
+        {
+            if (data.user_id == usrID)
+            {
+                newNode = (sale_node_t *)malloc(sizeof(sale_node_t));
+                if (!newNode)
+                {
+                    printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+                    break;
+                }
+                newNode->data = data;
+            }
+        }
+    }
+    return recCount;
 }

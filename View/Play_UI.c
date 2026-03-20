@@ -2,6 +2,7 @@
 
 #include "../Common/List.h"
 #include "../Service/Play.h"
+#include "Schedule_UI.h"
 #include "common.h"
 
 #include <stdio.h>
@@ -72,7 +73,7 @@ void Play_UI_MgtEntry(void)
         printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",
                paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
         printf("******************************************************************\n");
-        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [Q]uery | [R]eturn");
+        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [S]earch | [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
         scanf(" %c", &choice);
@@ -113,15 +114,17 @@ void Play_UI_MgtEntry(void)
                 List_Paging(list, paging, play_node_t);
             }
             break;
-        case 'q':
-        case 'Q':
+        case 's':
+        case 'S':
             system(CLEAR);
-            printf("Input the play ID to query: ");
+            printf("Input the play ID to search: ");
             scanf("%d", &id);
             clear_input_buffer();
-            Play_UI_Query(id);
-            printf("\nPress Enter to continue...");
-            getchar();
+            if (Play_UI_Query(id))
+            {
+                system(CLEAR);
+                Schedule_UI_MgtEntry(id);
+            }
             break;
         case 'p':
         case 'P':
@@ -138,8 +141,6 @@ void Play_UI_MgtEntry(void)
             {
                 Paging_Locate_OffsetPage(list, paging, 1, play_node_t);
             }
-            break;
-        default:
             break;
         }
     } while (choice != 'r' && choice != 'R');

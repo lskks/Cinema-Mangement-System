@@ -80,3 +80,92 @@ int Schedule_Perst_SelectByID(schedule_list_t list, int play_id) {
     fclose(fp);
     return recCount;
 }
+
+int Schedule_Perst_Insert(schedule_t *data)
+{
+    assert(NULL != data);
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "ab");
+    if (NULL == fp) {
+        return 0;
+    }
+
+    int result = fwrite(data, sizeof(schedule_t), 1, fp);
+    fclose(fp);
+    return result;
+}
+
+int Schedule_Perst_Modify(schedule_t *data)
+{
+    assert(NULL != data);
+
+    schedule_list_t list;
+    schedule_node_t *pos;
+    int found = 0;
+
+    List_Init(list, schedule_node_t);
+    Schedule_Perst_SelectAll(list);
+
+    List_ForEach(list, pos) {
+        if (pos->data.id == data->id) {
+            pos->data = *data;
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        List_Destroy(list, schedule_node_t);
+        return 0;
+    }
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "wb");
+    if (NULL == fp) {
+        List_Destroy(list, schedule_node_t);
+        return 0;
+    }
+
+    List_ForEach(list, pos) {
+        fwrite(&pos->data, sizeof(schedule_t), 1, fp);
+    }
+
+    fclose(fp);
+    List_Destroy(list, schedule_node_t);
+    return 1;
+}
+
+int Schedule_Perst_DeleteByID(int id) {
+    schedule_list_t list;
+    schedule_node_t *pos;
+    int found = 0;
+
+    List_Init(list, schedule_node_t);
+    Schedule_Perst_SelectAll(list);
+
+    List_ForEach(list, pos) {
+        if (pos->data.id == id) {
+            List_DelNode(pos);
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        List_Destroy(list, schedule_node_t);
+        return 0;
+    }
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "wb");
+    if (NULL == fp) {
+        List_Destroy(list, schedule_node_t);
+        return 0;
+    }
+
+    List_ForEach(list, pos) {
+        fwrite(&pos->data, sizeof(schedule_t), 1, fp);
+    }
+
+    fclose(fp);
+    List_Destroy(list, schedule_node_t);
+    return 1;
+}

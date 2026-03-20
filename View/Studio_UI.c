@@ -13,6 +13,8 @@
 #include "../Common/List.h"
 #include "../Service/Studio.h"
 #include "../Service/Seat.h"
+#include "Seat_UI.h"
+#include "../Common/common.h"
 
 
 static const int STUDIO_PAGE_SIZE = 5;
@@ -42,6 +44,7 @@ void Studio_UI_MgtEntry(void) {
 	Paging_Locate_FirstPage(head, paging);
 
 	do {
+		system(CLEAR);
 		printf(
 				"\n==================================================================\n");
 		printf(
@@ -68,13 +71,13 @@ void Studio_UI_MgtEntry(void) {
 		printf(
 				"\n==================================================================\n");
 		printf("Your Choice:");
-		fflush(stdin);
 		scanf(" %c", &choice);
-		fflush(stdin);
+		clear_input_buffer();
 
 		switch (choice) {
 		case 'a':
 		case 'A':
+			system(CLEAR);
 			if (Studio_UI_Add()) //新添加成功，跳到最后一页显示
 			{
 				paging.totalRecords = Studio_Srv_FetchAll(head);
@@ -83,8 +86,10 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		case 'd':
 		case 'D':
+			system(CLEAR);
 			printf("Input the ID:");
 			scanf("%d", &id);
+			clear_input_buffer();
 			if (Studio_UI_Delete(id)) {	//从新载入数据
 				paging.totalRecords = Studio_Srv_FetchAll(head);
 				List_Paging(head, paging, studio_node_t);
@@ -92,8 +97,10 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		case 'u':
 		case 'U':
+			system(CLEAR);
 			printf("Input the ID:");
 			scanf("%d", &id);
+			clear_input_buffer();
 			if (Studio_UI_Modify(id)) {	//从新载入数据
 				paging.totalRecords = Studio_Srv_FetchAll(head);
 				List_Paging(head, paging, studio_node_t);
@@ -101,21 +108,25 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		case 's':
 		case 'S':
+			system(CLEAR);
 			printf("Input the ID:");
 			scanf("%d", &id);
-			//Seat_UI_MgtEntry(id);
+			clear_input_buffer();
+			Seat_UI_MgtEntry(id);
 			paging.totalRecords = Studio_Srv_FetchAll(head);
 			List_Paging(head, paging, studio_node_t)
 			;
 			break;
 		case 'p':
 		case 'P':
+			system(CLEAR);
 			if (!Pageing_IsFirstPage(paging)) {
 				Paging_Locate_OffsetPage(head, paging, -1, studio_node_t);
 			}
 			break;
 		case 'n':
 		case 'N':
+			system(CLEAR);
 			if (!Pageing_IsLastPage(paging)) {
 				Paging_Locate_OffsetPage(head, paging, 1, studio_node_t);
 			}
@@ -138,16 +149,17 @@ int Studio_UI_Add(void) {
 	char choice;
 
 	do {
+		system(CLEAR);
 		printf("\n=======================================================\n");
 		printf("****************  Add New Projection Room  ****************\n");
 		printf("-------------------------------------------------------\n");
 		printf("Room Name:");
-		fflush(stdin);
-		gets(rec.name);
+		scanf("%s", rec.name);
 		printf("Row Count of Seats:");
 		scanf("%d", &(rec.rowsCount));
 		printf("Column Count of Seats:");
 		scanf("%d", &(rec.colsCount));
+		clear_input_buffer();
 		rec.seatsCount = 0;
 		printf("=======================================================\n");
 
@@ -158,8 +170,8 @@ int Studio_UI_Add(void) {
 			printf("The new room added failed!\n");
 		printf("-------------------------------------------------------\n");
 		printf("[A]dd more, [R]eturn:");
-		fflush(stdin);
-		scanf("%c", &choice);
+		scanf(" %c", &choice);
+		clear_input_buffer();
 	} while ('a' == choice || 'A' == choice);
 	return newRecCount;
 }
@@ -180,17 +192,18 @@ int Studio_UI_Modify(int id) {
 	/*Load record*/
 	if (!Studio_Srv_FetchByID(id, &rec)) {
 		printf("The room does not exist!\nPress [Enter] key to return!\n");
+		clear_input_buffer();
 		getchar();
 		return 0;
 	}
+	system(CLEAR);
 
 	printf("\n=======================================================\n");
 	printf("****************  Update Projection Room  ****************\n");
 	printf("-------------------------------------------------------\n");
 	printf("Room ID:%d\n", rec.id);
 	printf("Room Name[%s]:", rec.name);
-	fflush(stdin);
-	gets(rec.name);
+	scanf("%s", rec.name);
 
 	List_Init(list, seat_node_t);
 	seatcount = Seat_Srv_FetchByRoomID(list, rec.id);
@@ -213,6 +226,7 @@ int Studio_UI_Modify(int id) {
 	}
 
 	printf("-------------------------------------------------------\n");
+	clear_input_buffer();
 
 	if (Studio_Srv_Modify(&rec)) {
 		rtn = 1;
@@ -246,7 +260,7 @@ int Studio_UI_Delete(int id) {
 		printf("The room does not exist!\nPress [Enter] key to return!\n");
 	}
 
+	clear_input_buffer();
 	getchar();
 	return rtn;
 }
-

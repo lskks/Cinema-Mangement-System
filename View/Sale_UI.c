@@ -5,6 +5,7 @@
 #include "../Service/Sale.h"
 #include "../Service/Seat.h"
 #include "../Service/Play.h"
+#include "Account.h"
 #include "Schedule.h"
 #include "Ticket_UI.h"
 
@@ -33,6 +34,7 @@ void Sale_UI_MgtEnt()
     char choice;
     do
     {
+        system(CLEAR);
         printf("\n==================================================================\n");
         printf("********************** Sale **********************\n");
         printf("%5s  %18s  %10s\n", "ID", "Name", "Type");
@@ -123,6 +125,7 @@ void Sale_UI_ShowSheduler(int playID)
     char choice;
     do
     {
+        system(CLEAR);
         printf("\n==================================================================\n");
         printf("********************** Schedule **********************\n");
         printf("Play: %s (ID: %d)\n", play.name, play.id);
@@ -188,9 +191,11 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
 {
     int row, col;
     seat_node_t* seat;
+    (void)ticket_list;
     printf("Sell Ticket\n");
     printf("Please enter the row and column of the seat you want to sell: ");
     scanf("%d %d", &row, &col);
+    clear_input_buffer();
 
     if ((seat = Seat_Srv_FindByRowCol(seat_list, row, col)) == NULL)
     {
@@ -206,5 +211,34 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
 
 void Sale_UI_RefundTicket()
 {
+    printf("Refund Ticket\n");
+    printf("Please enter the ID of the ticket you want to refund: ");
+    int id;
+    scanf("%d", &id);
+    clear_input_buffer();
+    ticket_t ticket;
+    if (Ticket_Srv_FetchByID(id, &ticket) == 0)
+    {
+        fprintf(stderr, "Ticket with ID %d not found.\n", id);
+        printf("Press Enter to return...");
+        getchar();
+        system(CLEAR);
+        return;
+    }
     
+    if (ticket.status == TICKET_AVL)
+    {
+        system(CLEAR);
+        return;
+    }
+
+    sale_t refound;
+    refound.ticket_id = ticket.id;
+    refound.user_id = gl_CurUser.id;
+    refound.type = SALE_REFOUND;
+    refound.value = -ticket.price;
+
+    Sale_Srv_Add(&refound);
+    system(CLEAR);
+    return;
 }

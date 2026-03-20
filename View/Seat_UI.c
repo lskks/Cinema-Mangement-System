@@ -15,6 +15,7 @@
 
 #include "../Common/List.h"
 #include "../Service/Studio.h"
+#include "../Common/common.h"
 #include <stdio.h>
 
 /*
@@ -62,6 +63,17 @@ inline seat_status_t Seat_UI_Char2Status(char statusChar)
 参数说明：roomID为整型，是需要设置座位的演出厅ID。
 返 回 值：无。
 */
+void show_info(studio_t studio)
+{
+    printf("------------------------------------------------------------------\n");
+    printf("Studio ID: %d\n", studio.id);
+    printf("Studio Name: %s\n", studio.name);
+    printf("Row Count: %d\n", studio.rowsCount);
+    printf("Column Count: %d\n", studio.colsCount);
+    printf("Seats Count: %d\n", studio.seatsCount);
+    printf("------------------------------------------------------------------\n");
+}
+
 void Seat_UI_MgtEntry(int roomID)
 {
     studio_t studio;
@@ -70,8 +82,8 @@ void Seat_UI_MgtEntry(int roomID)
     int row, col;
     if (!Studio_Srv_FetchByID(roomID, &studio))
     {
-        printf("演出厅不存在\n");
-        printf("返回");
+        printf("Studio does not exist.\n");
+        printf("Returning.\n");
         return;
     }
     else
@@ -80,34 +92,43 @@ void Seat_UI_MgtEntry(int roomID)
         int seatCount = Seat_Srv_FetchByRoomID(list, roomID);
         if (seatCount == 0)
         {
-            printf("座位不存在，正在进行座位初始化");
+            printf("No seats found. Initializing seats...\n");
             Seat_Srv_RoomInit(list, roomID, studio.rowsCount, studio.colsCount);
             if (Seat_Srv_AddBatch(list))
             {
                 studio.seatsCount = studio.rowsCount * studio.colsCount;
                 Studio_Srv_Modify(&studio);
-                printf("座位初始化成功！共初始化 %d 个座位\n", studio.seatsCount);
+                printf("Seat initialization succeeded! Total initialized: %d.\n", studio.seatsCount);
             }
             else
             {
-                printf("座位初始化失败！\n");
+                printf("Seat initialization failed!\n");
             }
         }
         else
         {
+            printf("Seats loaded successfully! Total seats: %d.\n", seatCount);
         }
-
-        printf("[A]添加座位 | [U]修改座位 | [D]删除座位 | [R]返回\n");
-        printf("请选择操作:");
-        scanf("%c", &choice);
+        system(CLEAR);
+        printf("==================================================================\n");
+        printf("************************ Seat Management ************************\n");
+        show_info(studio);
+        printf("[A]dd Seat | [U]pdate Seat | [D]elete Seat | [R]eturn\n");
+        printf("==================================================================\n");
+        printf("Your Choice:");
+        scanf(" %c", &choice);
+        clear_input_buffer();
         switch (choice)
         {
         case 'A':
         case 'a':
-            printf("请输入要添加的行号(1-%d):\n请输入要添加的列号(1-%d):", studio.rowsCount,
+            system(CLEAR);
+            show_info(studio);
+            printf("Input row to add (1-%d):\nInput column to add (1-%d):", studio.rowsCount,
                    studio.colsCount);
             scanf("%d", &row);
             scanf("%d", &col);
+            clear_input_buffer();
             if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
             {
                 if (Seat_UI_Add(list, roomID, row, col))
@@ -118,8 +139,8 @@ void Seat_UI_MgtEntry(int roomID)
             }
             else
             {
-                printf("输入的行列号超出范围！\n");
-                printf("重新输入\n");
+                printf("Row or column out of range!\n");
+                printf("Please retry.\n");
             }
             List_Destroy(list, seat_node_t);
             List_Init(list, seat_node_t);
@@ -127,10 +148,13 @@ void Seat_UI_MgtEntry(int roomID)
             break;
         case 'U':
         case 'u':
-            printf("请输入要修改座位的行号(1-%d):", studio.rowsCount);
+            system(CLEAR);
+            show_info(studio);
+            printf("Input row to update (1-%d):", studio.rowsCount);
             scanf("%d", &row);
-            printf("请输入要修改座位的列号(1-%d):", studio.colsCount);
+            printf("Input column to update (1-%d):", studio.colsCount);
             scanf("%d", &col);
+            clear_input_buffer();
             if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
             {
                 if (Seat_UI_Modify(list, row, col))
@@ -142,8 +166,8 @@ void Seat_UI_MgtEntry(int roomID)
             }
             else
             {
-                printf("输入的行列号超出范围！\n");
-                printf("重新输入\n");
+                printf("Row or column out of range!\n");
+                printf("Please retry.\n");
             }
             List_Destroy(list, seat_node_t);
             List_Init(list, seat_node_t);
@@ -151,10 +175,14 @@ void Seat_UI_MgtEntry(int roomID)
             break;
         case 'D':
         case 'd':
-            printf("请输入要删除座位的行号(1-%d):", studio.rowsCount);
+            system(CLEAR);
+            show_info(studio);
+            printf("Input row to delete (1-%d):", studio.rowsCount);
             scanf("%d", &row);
-            printf("请输入要删除座位的列号(1-%d):", studio.colsCount);
+            clear_input_buffer();
+            printf("Input column to delete (1-%d):", studio.colsCount);
             scanf("%d", &col);
+            clear_input_buffer();
             if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
             {
                 if (Seat_UI_Delete(list, row, col))
@@ -166,8 +194,8 @@ void Seat_UI_MgtEntry(int roomID)
             }
             else
             {
-                printf("输入的行列号超出范围！\n");
-                printf("重新输入\n");
+                printf("Row or column out of range!\n");
+                printf("Please retry.\n");
             }
             List_Destroy(list, seat_node_t);
             List_Init(list, seat_node_t);
@@ -177,7 +205,7 @@ void Seat_UI_MgtEntry(int roomID)
         case 'r':
             break;
         default:
-            printf("无效输入，请重新输入\n");
+            printf("Invalid input, please retry.\n");
             break;
         }
     }
@@ -194,12 +222,12 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
 { // ����һ����λ
     if (list == NULL)
     {
-        printf("错误:座位列表为空");
+        printf("Error: seat list is null.\n");
         return 0;
     }
     if (roomID <= 0 || row <= 0 || column <= 0)
     {
-        printf("错误:演出厅ID、排号或列号\n");
+        printf("Error: invalid studio ID, row, or column.\n");
         return 0;
     }
     seat_list_t current = list;
@@ -208,7 +236,7 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
         if (current->data.roomID == roomID && current->data.row == row &&
             current->data.column == column)
         {
-            printf("错误：该座位已存在（演出厅%d - %d排%d座）\n", roomID, row, column);
+            printf("Error: seat already exists (Studio %d - Row %d, Col %d).\n", roomID, row, column);
             return 0;
         }
         current = current->next;
@@ -221,12 +249,12 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
     int result = Seat_Srv_Add(&newSeat);
     if (result == 1)
     {
-        printf("成功：座位已添加（演出厅%d - %d排%d座）\n", roomID, row, column);
+        printf("Success: seat added (Studio %d - Row %d, Col %d).\n", roomID, row, column);
         return 1;
     }
     else
     {
-        printf("错误：添加座位失败\n");
+        printf("Error: failed to add seat.\n");
         return 0;
     }
 }
@@ -254,44 +282,45 @@ int Seat_UI_Modify(seat_list_t list, int row, int column)
     }
     if (!found)
     {
-        printf("错误：未找到第%d行第%d列的座位！\n", row, column);
+        printf("Error: seat at row %d, col %d not found.\n", row, column);
         return -1;
     }
-    printf("========== 座位修改 ==========\n");
-    printf("当前座位信息：\n");
-    printf("  座位ID：%d\n", p->data.id);
-    printf("  所属影厅ID：%d\n", p->data.roomID);
-    printf("  位置：第%d行 第%d列\n", p->data.row, p->data.column);
-    printf("  当前状态：");
+    printf("========== Seat Update ==========\n");
+    printf("Current seat information:\n");
+    printf("  Seat ID: %d\n", p->data.id);
+    printf("  Studio ID: %d\n", p->data.roomID);
+    printf("  Position: row %d, col %d\n", p->data.row, p->data.column);
+    printf("  Current status: ");
     switch (p->data.status)
     {
     case SEAT_NONE:
-        printf("无座位\n");
+        printf("None\n");
         break;
     case SEAT_GOOD:
-        printf("完好\n");
+        printf("Good\n");
         break;
     case SEAT_BROKEN:
-        printf("损坏\n");
+        printf("Broken\n");
         break;
     default:
-        printf("未知状态\n");
+        printf("Unknown\n");
     }
-    printf("\n请输入新的座位状态：\n");
-    printf("  # - 完好座位\n");
-    printf("  ~ - 损坏座位\n");
-    printf("  | - 无座位\n");
-    printf("请选择：");
+    printf("\nInput new seat status:\n");
+    printf("  # - Good seat\n");
+    printf("  ~ - Broken seat\n");
+    printf("    - No seat (space)\n");
+    printf("Choose: ");
     scanf(" %c", &statusChar);
+    clear_input_buffer();
     int new_status = Seat_UI_Char2Status(statusChar);
     if (new_status != SEAT_NONE && new_status != SEAT_GOOD && new_status != SEAT_BROKEN)
     {
-        printf("错误：无效的座位状态字符！\n");
+        printf("Error: invalid seat status character!\n");
         return -1;
     }
     if (new_status == p->data.status)
     {
-        printf("提示：座位状态未改变，无需修改。\n");
+        printf("Notice: seat status unchanged.\n");
         return 1;
     }
     seat.id = p->data.id;
@@ -302,12 +331,12 @@ int Seat_UI_Modify(seat_list_t list, int row, int column)
     int result = Seat_Srv_Modify(&seat);
     if (result == 1)
     {
-        printf("成功：座位修改成功！\n");
+        printf("Success: seat updated.\n");
         return 1;
     }
     else
     {
-        printf("失败：座位修改失败！\n");
+        printf("Failed: seat update failed.\n");
         return -1;
     }
 }
@@ -335,47 +364,48 @@ int Seat_UI_Delete(seat_list_t list, int row, int column)
     }
     if (!found)
     {
-        printf("错误：未找到第%d行第%d列的座位！\n", row, column);
+        printf("Error: seat at row %d, col %d not found.\n", row, column);
         return -1;
     }
-    printf("========== 座位删除 ==========\n");
-    printf("即将删除的座位信息：\n");
-    printf("  座位ID：%d\n", p->data.id);
-    printf("  所属影厅ID：%d\n", p->data.roomID);
-    printf("  位置：第%d行 第%d列\n", p->data.row, p->data.column);
-    printf("  当前状态：");
+    printf("========== Seat Deletion ==========\n");
+    printf("Seat to delete:\n");
+    printf("  Seat ID: %d\n", p->data.id);
+    printf("  Studio ID: %d\n", p->data.roomID);
+    printf("  Position: row %d, col %d\n", p->data.row, p->data.column);
+    printf("  Current status: ");
     switch (p->data.status)
     {
     case SEAT_NONE:
-        printf("无座位\n");
+        printf("None\n");
         break;
     case SEAT_GOOD:
-        printf("完好\n");
+        printf("Good\n");
         break;
     case SEAT_BROKEN:
-        printf("损坏\n");
+        printf("Broken\n");
         break;
     default:
-        printf("未知状态\n");
+        printf("Unknown\n");
     }
-    printf("\n警告：删除操作不可恢复！\n");
-    printf("是否确认删除？(y/n)：");
+    printf("\nWarning: delete is irreversible!\n");
+    printf("Confirm delete? (y/n): ");
     scanf(" %c", &confirm);
+    clear_input_buffer();
 
     if (confirm != 'y' && confirm != 'Y')
     {
-        printf("操作已取消。\n");
+        printf("Operation cancelled.\n");
         return 0;
     }
     int result = Seat_Srv_DeleteAllByRoomID(p->data.id);
     if (result == 1)
     {
-        printf("成功：座位删除成功！\n");
+        printf("Success: seat deleted.\n");
         return 1;
     }
     else
     {
-        printf("失败：座位删除失败！\n");
+        printf("Failed: seat deletion failed.\n");
         return -1;
     }
 }

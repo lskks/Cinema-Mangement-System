@@ -31,4 +31,14 @@ int Schedule_Srv_FetchByPlay(schedule_list_t list, int play_id);
 
 int Schedule_Srv_FetchByID(int id, schedule_t *buf);
 
+int Schedule_Srv_Add(schedule_t *data);
+
+int Schedule_Srv_Modify(schedule_t *data);
+
+int Schedule_Srv_DeleteByID(int id);
+
+// 功能：统计指定剧目的售票数量与票房
+// 返回值：总票房；soldCount返回总售票数量
+float Schedule_Srv_StatRevByPlay(int play_id, int *soldCount);
+
 #endif /* SCHEDULE_H_ */

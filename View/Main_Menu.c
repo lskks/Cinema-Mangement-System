@@ -17,7 +17,10 @@
 #include "../View/Sale_UI.h"
 #include "../View/Play_UI.h"
 #include "../View/Ticket_UI.h"
+#include "../View/SalesAnalysis_UI.h"
 #include "../Common/common.h"
+#include "StaSales_UI.h"
+
 
 void Queries_Menu()
 {
@@ -27,18 +30,25 @@ void Queries_Menu()
 		printf("**************** Queries Menu ****************\n");
 		printf("[T]icket Query.\n");
 		printf("[R]eturn.\n");
+		printf("[S]taSales Analysis.\n");
 		printf("\n==================================================================\n");
 		printf("Please input your choice:");
-		scanf("%c", &choice);
+		scanf(" %c", &choice);
 		switch (choice)
 		{
 		case 'T':
 		case 't':
+			system(CLEAR);
 			Ticket_UI_Query();
+			break;
+		case 'S':
+		case 's':
+			system(CLEAR);
+			StaSales_UI_MgtEntry();
 			break;
 		}
 		clear_input_buffer();
-	}while (choice != 'r' || choice != 'R');
+	}while (choice != 'r' && choice != 'R');
 }
 
 //系统主菜单 
@@ -67,24 +77,29 @@ void Main_Menu(void) {
 			break;
 		case 'P':
 		case 'p':
+			system(CLEAR);
 			Play_UI_MgtEntry();
 			break;
 		case 'Q':
 		case 'q':
+			system(CLEAR);
 			Queries_Menu();
 			break;
 		case 'T':
 		case 't':
+			system(CLEAR);
 			Sale_UI_MgtEnt();
 			break;
-/*		case 'R':
+		case 'R':
 		case 'r':
-			Sale_UI_ReturnTicket();
+			system(CLEAR);
+			Sale_UI_RefundTicket();
 			break;
 		case 'N':
 		case 'n':
+			system(CLEAR);
 			SalesAnalysis_UI_MgtEntry();
-			break;*/
+			break;
 		case 'A':
 		case 'a':
 			system(CLEAR);
@@ -93,4 +108,3 @@ void Main_Menu(void) {
 		}
 	} while ('E' != choice && 'e' != choice);
 }
-

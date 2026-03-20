@@ -6,12 +6,12 @@
 #ifndef SCHEDULE_UI_H_
 #define SCHEDULE_UI_H_
 
-//标识符：TTMS_SCU_Schedule_UI_List
-//功能：查询演出界面
-void Schedule_UI_ListAll(void);
+void Schedule_UI_MgtEntry(int playID);
 
-//标识符：TTMS_SCU_Schedule_UI_Qry
-//功能：根据剧目名称获取演出计划
-int Schedule_UI_Query(char *play_name);
+int Schedule_UI_Add(int playID);
+
+int Schedule_UI_Modify(int playID);
+
+int Schedule_UI_Delete(int playID);
 
 #endif /* SCHEDULE_UI_H_ */

@@ -11,6 +11,4 @@ int Play_UI_Delete(int id);
 
 int Play_UI_Query(int id);
 
-int Schedule_UI_MgtEntry();
- 
 #endif

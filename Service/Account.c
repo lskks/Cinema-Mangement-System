@@ -70,3 +70,10 @@ account_node_t* Account_Srv_FindByUserName(account_list_t list, char* userName)
     
     return NULL;
 }
+
+int Account_Srv_FetchByName(char* userName, account_t* data)
+{
+    assert(NULL != userName && NULL != data);
+    
+    return Account_Perst_SelectByName(userName, data);
+}

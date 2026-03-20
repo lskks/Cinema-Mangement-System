@@ -8,7 +8,7 @@ add_library(PersistenceLib
     Schedule_Persist.c
     # Ticket_Persist.c
     Ticket_Persist.c
-    StaSales.c
+    StaSales_Persist.c
 )
 
 target_include_directories(PersistenceLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

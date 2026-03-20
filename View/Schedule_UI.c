@@ -7,190 +7,213 @@
 #include "../Service/Schedule.h"
 #include "../Service/Play.h"
 #include "../Service/Studio.h"
+#include "../Common/common.h"
+#include "Ticket_UI.h"
 #include <stdio.h>
 #include <string.h>
 
 static const int SCHEDULE_PAGE_SIZE = 5;
 
-
-void Schedule_UI_ListAll(void) {
-    int i;
-    char choice;
-
-    schedule_list_t list_schedule;
-    schedule_node_t *pos_schedule;
-
-    play_list_t list_play;
-    play_node_t *play_node;
-
-    studio_list_t list_studio;
-    studio_node_t *studio_node;
-
+void Schedule_UI_MgtEntry(int playID)
+{
+    int i, id;
+    play_t data;
     Pagination_t paging;
+    schedule_list_t list;
+    schedule_node_t *pos;
+    schedule_t buf;
+    char choice;
+    if (!Play_Srv_FetchByID(playID, &data))
+    {
+        fprintf(stderr, "Play does not exist.\n");
+        return;
+    }
 
-    // 初始化链表
-    List_Init(list_schedule, schedule_node_t);
-    List_Init(list_play, play_node_t);
-    List_Init(list_studio, studio_node_t);
+    List_Init(list, schedule_node_t);
 
     paging.offset = 0;
     paging.pageSize = SCHEDULE_PAGE_SIZE;
+    paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
 
-    // 载入数据
-    paging.totalRecords = Schedule_Srv_FetchAll(list_schedule);
+    Paging_Locate_FirstPage(list, paging);
 
-    // 载入所有剧目和演出厅信息，用于显示名称
-    Play_Srv_FetchAll(list_play);
-    Studio_Srv_FetchAll(list_studio);
-
-    Paging_Locate_FirstPage(list_schedule, paging);
-
-    do {
-        printf("\n==================================================================\n");
-        printf("************************ Schedule List ************************\n");
-        printf("%5s  %20s  %12s  %12s  %10s  %8s\n",
-               "ID", "Play Name", "Studio Name", "Date", "Start Time", "Price");
+    do
+    {
+        printf("************************* Schedule Management *************************\n");
+        printf("%4s  %-8s  %-8s  %-8s  %-6s  %-5s\n", "ID", "Play ID", "Studio ID", "Seat Count", "Dur", "Price");
         printf("------------------------------------------------------------------\n");
-
-        // 显示数据
-        Paging_ViewPage_ForEach(list_schedule, paging, schedule_node_t, pos_schedule, i) {
-            // 获取剧目名称
-            play_node = Play_Srv_FindByID(list_play, pos_schedule->data.play_id);
-            char *play_name = (play_node) ? play_node->data.name : "Unknown";
-
-            // 获取演出厅名称
-            studio_node = Studio_Srv_FindByID(list_studio, pos_schedule->data.studio_id);
-            char *studio_name = (studio_node) ? studio_node->data.name : "Unknown";
-
-            printf("%5d  %20s  %12s  %04d-%02d-%02d  %02d:%02d     %8.2f\n",
-                   pos_schedule->data.id,
-                   play_name,
-                   studio_name,
-                   pos_schedule->data.date.year,
-                   pos_schedule->data.date.month,
-                   pos_schedule->data.date.day,
-                   pos_schedule->data.time.hour,
-                   pos_schedule->data.time.minute,
-                   pos_schedule->data.price);
+        Paging_ViewPage_ForEach(list, paging, schedule_node_t, pos, i)
+        {
+            printf("%4d  %-8d  %-8d  %-8d  %-6d  %-5.2d\n", pos->data.id,
+                   pos->data.play_id, pos->data.studio_id, pos->data.seat_count,
+                   data.duration, data.price);
         }
-
         printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",
-               paging.totalRecords, Pageing_CurPage(paging),
-               Pageing_TotalPages(paging));
+               paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
         printf("******************************************************************\n");
-        printf("[P]revPage | [N]extPage | [Q]uery | [R]eturn");
+        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [S]how Ticket | [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
-        fflush(stdin);
-        scanf("%c", &choice);
-        fflush(stdin);
+        scanf(" %c", &choice);
+        clear_input_buffer();
 
-        switch (choice) {
-        case 'q':
-        case 'Q':
-            Schedule_UI_Query(NULL);
+        switch (choice)
+        {
+        case 'a':
+        case 'A':
+            system(CLEAR);
+            Schedule_UI_Add(playID);
+            paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
+            List_Paging(list, paging, schedule_node_t);
+            break;
+        case 'd':
+        case 'D':
+            system(CLEAR);
+            printf("Enter the schedule ID to delete: ");
+            scanf("%d", &id);
+            clear_input_buffer();
+            Schedule_UI_Delete(id);
+            paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
+            List_Paging(list, paging, schedule_node_t);
+            break;
+            case 'u':
+            case 'U':
+            system(CLEAR);
+            printf("Enter the schedule ID to update: ");
+            scanf("%d", &id);
+            clear_input_buffer();
+            Schedule_UI_Modify(id);
+            paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
+            List_Paging(list, paging, schedule_node_t);
+            break;
+            case 's':
+            case 'S':
+            system(CLEAR);
+            printf("Enter the schedule ID to query: ");
+            scanf("%d", &id);
+            clear_input_buffer();
+            if (Schedule_Srv_FetchByID(id, &buf) == 0)
+            {
+                fprintf(stderr, "Schedule not found.\n");
+                break;
+            }
+            Ticket_UI_MgtEntry(id);
             break;
         case 'p':
         case 'P':
-            if (!Pageing_IsFirstPage(paging)) {
-                Paging_Locate_OffsetPage(list_schedule, paging, -1, schedule_node_t);
+            system(CLEAR);
+            if (!Pageing_IsFirstPage(paging))
+            {
+                Paging_Locate_OffsetPage(list, paging, -1, schedule_node_t);
             }
             break;
         case 'n':
         case 'N':
-            if (!Pageing_IsLastPage(paging)) {
-                Paging_Locate_OffsetPage(list_schedule, paging, 1, schedule_node_t);
+            system(CLEAR);
+            if (!Pageing_IsLastPage(paging))
+            {
+                Paging_Locate_OffsetPage(list, paging, 1, schedule_node_t);
             }
             break;
         }
     } while (choice != 'r' && choice != 'R');
 
-    // 释放链表空间
-    List_Destroy(list_schedule, schedule_node_t);
-    List_Destroy(list_play, play_node_t);
-    List_Destroy(list_studio, studio_node_t);
+    system(CLEAR);
+    List_Destroy(list, schedule_node_t);
+
 }
 
-int Schedule_UI_Query(char *play_name) {
-    static char name[31];
-    play_list_t list_play;
-    play_node_t *play_node;
+int Schedule_UI_Add(int playID)
+{
+    schedule_t data;
+    memset(&data, 0, sizeof(schedule_t));
 
-    schedule_list_t list_schedule;
-    schedule_node_t *schedule_node;
+    printf("=======================================================\n");
+    printf("********************** Add New Schedule *******************\n");
+    printf("Schedule ID: ");
+    scanf("%d", &data.id);
+    printf("Play ID: ");
+    scanf("%d", &data.play_id);
+    printf("Studio ID: ");
+    scanf("%d", &data.studio_id);
+    printf("End Date (YYYY MM DD): ");
+    scanf("%d %d %d", &data.date.year, &data.date.month, &data.date.day);
+    printf("End Time (HH MM SS): ");
+    scanf("%d %d %d", &data.time.hour, &data.time.minute, &data.time.second);
+    printf("Price: ");
+    scanf("%f", &data.price);
+    printf("Status of Schedule (0-Not Started, 1-Started, 2-Ended): ");
+    scanf("%d", &data.status);
+    clear_input_buffer();
+    printf("=======================================================\n");
 
-    studio_list_t list_studio;
-    studio_node_t *studio_node;
-
-    int play_count, schedule_count = 0;
-    int found = 0;
-
-    // 初始化链表
-    List_Init(list_play, play_node_t);
-    List_Init(list_schedule, schedule_node_t);
-    List_Init(list_studio, studio_node_t);
-
-    // 载入所有演出厅信息
-    Studio_Srv_FetchAll(list_studio);
-
-    // 获取剧目名称
-    if (play_name == NULL) {
-        printf("\nPlease input the play name to query: ");
-        fflush(stdin);
-        gets(name);
-        play_name = name;
+    if (Schedule_Srv_Add(&data))
+    {
+        printf("Schedule added successfully! ID=%d\n", data.id);
+        return 1;
     }
 
-    // 根据名称获取剧目
-    play_count = Play_Srv_FetchByName(list_play, play_name);
+    printf("Failed to add schedule.\n");
+    return 0;
+}
 
-    if (play_count == 0) {
-        printf("\nNo play found with name '%s'!\n", play_name);
-    } else {
-        printf("\n==================================================================\n");
-        printf("******************** Schedule Query Result ********************\n");
-        printf("%5s  %20s  %12s  %12s  %10s  %8s\n",
-               "ID", "Play Name", "Studio Name", "Date", "Start Time", "Price");
-        printf("------------------------------------------------------------------\n");
-
-        // 遍历每个找到的剧目
-        List_ForEach(list_play, play_node) {
-            // 根据剧目ID获取演出计划
-            List_Free(list_schedule, schedule_node_t);
-            schedule_count = Schedule_Srv_FetchByPlay(list_schedule, play_node->data.id);
-
-            // 显示该剧目的所有演出计划
-            List_ForEach(list_schedule, schedule_node) {
-                // 获取演出厅名称
-                studio_node = Studio_Srv_FindByID(list_studio, schedule_node->data.studio_id);
-                char *studio_name = (studio_node) ? studio_node->data.name : "Unknown";
-
-                printf("%5d  %20s  %12s  %04d-%02d-%02d  %02d:%02d     %8.2f\n",
-                       schedule_node->data.id,
-                       play_node->data.name,
-                       studio_name,
-                       schedule_node->data.date.year,
-                       schedule_node->data.date.month,
-                       schedule_node->data.date.day,
-                       schedule_node->data.time.hour,
-                       schedule_node->data.time.minute,
-                       schedule_node->data.price);
-
-                found++;
-            }
-        }
-
-        printf("---------------------- Total Found: %2d -----------------------\n", found);
-        printf("******************************************************************\n");
+int Schedule_UI_Modify(int playID)
+{
+    schedule_t data;
+    if (!Schedule_Srv_FetchByID(playID, &data))
+    {
+        printf("Schedule does not exist.\n");
+        return 0;
     }
 
-    printf("Press [Enter] key to continue...");
-    getchar();
+    printf("=======================================================\n");
+    printf("********************** Update Schedule ********************\n");
+    printf("Schedule ID: ");
+    scanf("%d", &data.id);
+    printf("Play ID: ");
+    scanf("%d", &data.play_id);
+    printf("Studio ID: ");
+    scanf("%d", &data.studio_id);
+    printf("End Date (YYYY MM DD): ");
+    scanf("%d %d %d", &data.date.year, &data.date.month, &data.date.day);
+    printf("End Time (HH MM SS): ");
+    scanf("%d %d %d", &data.time.hour, &data.time.minute, &data.time.second);
+    printf("Price: ");
+    scanf("%f", &data.price);
+    printf("Status of Schedule (0-Not Started, 1-Started, 2-Ended): ");
+    scanf("%d", &data.status);
+    clear_input_buffer();
+    printf("=======================================================\n");
 
-    // 释放链表空间
-    List_Destroy(list_play, play_node_t);
-    List_Destroy(list_schedule, schedule_node_t);
-    List_Destroy(list_studio, studio_node_t);
+    if (Schedule_Srv_Modify(&data))
+    {
+        printf("Schedule updated successfully.\n");
+        return 1;
+    }
 
-    return found;
+    printf("Failed to update schedule.\n");
+    return 0;
+}
+
+int Schedule_UI_Delete(int playID)
+{
+    char confirm;
+    printf("Are you sure to delete schedule ID %d? (y/n): ", playID);
+    scanf(" %c", &confirm);
+    clear_input_buffer();
+
+    if (confirm != 'y' && confirm != 'Y')
+    {
+        printf("Delete cancelled.\n");
+        return 0;
+    }
+
+    if (Schedule_Srv_DeleteByID(playID))
+    {
+        printf("Schedule deleted successfully.\n");
+        return 1;
+    }
+
+    printf("Failed to delete schedule (may not exist).\n");
+    return 0;
 }

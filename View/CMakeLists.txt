@@ -8,6 +8,8 @@ add_library(ViewLib
     Schedule_UI.c
     Sale_UI.c
     Ticket_UI.c
+    SalesAnalysis_UI.c
+    StaSales_UI.c
 )
 
 target_include_directories(ViewLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
