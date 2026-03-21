@@ -134,6 +134,7 @@ void Studio_UI_MgtEntry(void) {
 		}
 	} while (choice != 'r' && choice != 'R');
 	//释放链表空间
+	system(CLEAR);
 	List_Destroy(head, studio_node_t);
 }
 
@@ -160,7 +161,7 @@ int Studio_UI_Add(void) {
 		printf("Column Count of Seats:");
 		scanf("%d", &(rec.colsCount));
 		clear_input_buffer();
-		rec.seatsCount = 0;
+		rec.seatsCount = rec.rowsCount * rec.colsCount;
 		printf("=======================================================\n");
 
 		if (Studio_Srv_Add(&rec)) {
@@ -222,7 +223,7 @@ int Studio_UI_Modify(int id) {
 		scanf("%d", &rec.rowsCount);
 		printf("Column Count of Seats:");
 		scanf("%d", &rec.colsCount);
-		rec.seatsCount = 0;
+		rec.seatsCount = rec.rowsCount * rec.colsCount;
 	}
 
 	printf("-------------------------------------------------------\n");

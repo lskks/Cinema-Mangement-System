@@ -30,7 +30,6 @@ void Queries_Menu()
 		printf("**************** Queries Menu ****************\n");
 		printf("[T]icket Query.\n");
 		printf("[R]eturn.\n");
-		printf("[S]taSales Analysis.\n");
 		printf("\n==================================================================\n");
 		printf("Please input your choice:");
 		scanf(" %c", &choice);
