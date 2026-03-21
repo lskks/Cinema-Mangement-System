@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 
-void Sale_UI_MgtEnt()
+void Sale_UI_MgtEntry()
 {
     int id , i = 0;
     char name[30];

@@ -13,6 +13,7 @@
 #include <locale.h>
 // #include <io.h>
 #include "./View/Main_Menu.h"
+#include "common.h"
 
 //系统运行入口函数main
 int main(void) {

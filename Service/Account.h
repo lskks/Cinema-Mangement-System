@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string.h>
 #ifndef ACCOUNT_H_
 #define ACCOUNT_H_
 
@@ -50,5 +51,36 @@ int Account_Srv_FetchAll(account_list_t list);
 int Account_Srv_FetchByName(char* userName, account_t* data);
 
 account_node_t* Account_Srv_FindByUserName(account_list_t list, char* userName);
+
+static inline char* account_type2str(account_type_t type)
+{
+    switch (type)
+    {
+    case USR_ANOMY:
+        return "Anonymous";
+    case USR_CLERK:
+        return "Clerk";
+    case USR_MANG:
+        return "Manager";
+    case USR_ADMIN:
+        return "Admin";
+    default:
+        return "Unknown";
+    }
+}
+
+static inline account_type_t str2account_type(const char* str)
+{
+    if (strcmp(str, "Anonymous") == 0)
+        return USR_ANOMY;
+    else if (strcmp(str, "Clerk") == 0)
+        return USR_CLERK;
+    else if (strcmp(str, "Manager") == 0)
+        return USR_MANG;
+    else if (strcmp(str, "Admin") == 0)
+        return USR_ADMIN;
+    else
+        return -1; // Invalid type
+}
 
 #endif

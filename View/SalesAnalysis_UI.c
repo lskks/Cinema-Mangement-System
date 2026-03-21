@@ -63,10 +63,9 @@ void SalesAnalysis_UI_MgtEntry(void) {
         printf("[P]revPage | [N]extPage | [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
-        fflush(stdin);
+        clear_input_buffer();
         scanf("%c", &choice);
-        fflush(stdin);
-        
+        clear_input_buffer();
         // g) 接收用户输入的按键字符
         switch (choice) {
         case 'p':

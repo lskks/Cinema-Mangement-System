@@ -9,101 +9,92 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-static void clear_input()
-{
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
-}
+
 static int get_last_day(int year, int month)
 {
     if (month == 2)
     {
         if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0))
-        {
             return 29;
-        }
         else
-        {
             return 28;
-        }
     }
     else if (month == 4 || month == 6 || month == 9 || month == 11)
-    {
         return 30;
-    }
     else
-    {
         return 31;
-    }
 }
 void StaSales_UI_MgtEntry(void)
 {
     char choice;
     while (1)
     {
-        system("clear");
-        printf("========================================\n");
-        printf("          统计销售额界面\n");
-        printf("========================================\n\n");
+        system(CLEAR);
+        printf("\n==================================================================\n");
+        printf("************************ StaSales Analysis ************************\n");
+        printf("Current User: %s\n", gl_CurUser.username);
+
         if (gl_CurUser.type == USR_CLERK)
         {
-            printf("当前用户：%s (售票员)\n", gl_CurUser.username);
-            printf("\n请选择操作:\n");
-            printf("  S - 统计个人销售额\n");
-            printf("  Q - 返回\n");
-            printf("请输入选项: ");
-            scanf("%c", &choice);
-            clear_input();
+            printf("Role: Clerk\n");
+            printf("------------------------------------------------------------------\n");
+            printf("[S]elf Sales Statistics\n");
+            printf("[R]eturn\n");
+            printf("==================================================================\n");
+            printf("Please input your choice:");
+            scanf(" %c", &choice);
+            clear_input_buffer();
             switch (choice)
             {
             case 'S':
             case 's':
                 StaSales_UI_Self();
                 break;
-            case 'Q':
-            case 'q':
+            case 'R':
+            case 'r':
                 return;
             default:
-                printf("无效选项!\n");
+                printf("Invalid choice!\n");
                 break;
             }
         }
         else if (gl_CurUser.type == USR_MANG)
         {
-            printf("当前用户：%s (经理)\n", gl_CurUser.username);
-            printf("\n请选择操作:\n");
-            printf("  C - 统计售票员销售额\n");
-            printf("  Q - 返回\n");
-            printf("请输入选项: ");
-            scanf("%c", &choice);
-            clear_input();
+            printf("Role: Manager\n");
+            printf("------------------------------------------------------------------\n");
+            printf("[C]lerk Sales Statistics\n");
+            printf("[R]eturn\n");
+            printf("==================================================================\n");
+            printf("Please input your choice:");
+            scanf(" %c", &choice);
+            clear_input_buffer();
             switch (choice)
             {
             case 'C':
             case 'c':
                 StaSales_UI_Clerk();
                 break;
-            case 'Q':
-            case 'q':
+            case 'R':
+            case 'r':
                 return;
             default:
-                printf("无效选项！\n");
+                printf("Invalid choice!\n");
                 break;
             }
         }
         else
         {
-            printf("账号没有权限！\n");
-            printf("按回车键返回...");
+            printf("Permission denied for current account.\n");
+            printf("Press [Enter] key to return...");
             getchar();
             return;
         }
 
-        printf("\n按回车键继续...");
+        printf("\nPress [Enter] key to continue...");
         getchar();
     }
 }
+
 void StaSales_UI_Self(void)
 {
     int id = gl_CurUser.id;
@@ -127,49 +118,50 @@ void StaSales_UI_Self(void)
     enddate.year = curdate.year;
     enddate.month = curdate.month;
     enddate.day = get_last_day(curdate.year, curdate.month);
-    printf("\n========================================\n");
-    printf("          统计个人销售额\n");
-    printf("========================================\n");
-    printf("售票员：%s (ID: %d)\n", gl_CurUser.username, id);
-    printf("当前日期：%04d-%02d-%02d\n", curdate.year, curdate.month, curdate.day);
-    printf("\n请选择统计类型:\n");
-    printf("  D - 当日销售额\n");
-    printf("  M - 当月销售额\n");
-    printf("  Q - 返回\n");
-
-    printf("请输入选项: ");
-    scanf("%c", &choice);
-    clear_input();
+    system(CLEAR);
+    printf("\n==================================================================\n");
+    printf("********************** Self Sales Statistics **********************\n");
+    printf("Clerk: %s (ID: %d)\n", gl_CurUser.username, id);
+    printf("Current Date: %04d-%02d-%02d\n", curdate.year, curdate.month, curdate.day);
+    printf("------------------------------------------------------------------\n");
+    printf("[D]aily Sales\n");
+    printf("[M]onthly Sales\n");
+    printf("[R]eturn\n");
+    printf("==================================================================\n");
+    printf("Please input your choice:");
+    scanf(" %c", &choice);
+    clear_input_buffer();
 
     switch (choice)
     {
     case 'D':
     case 'd':
         amount = StaSales_Srv_CompSaleVal(id, curdate, curdate);
-        printf("\n--- 统计结果 ---\n");
-        printf("售票员：%s\n", gl_CurUser.username);
-        printf("统计日期：%04d-%02d-%02d\n", curdate.year, curdate.month, curdate.day);
-        printf("当日销售额：%d 元\n", amount);
+        printf("\n--- Statistics Result ---\n");
+        printf("Clerk: %s\n", gl_CurUser.username);
+        printf("Date: %04d-%02d-%02d\n", curdate.year, curdate.month, curdate.day);
+        printf("Daily Sales: %d\n", amount);
         break;
 
     case 'M':
     case 'm':
         amount = StaSales_Srv_CompSaleVal(id, startdate, enddate);
-        printf("\n--- 统计结果 ---\n");
-        printf("售票员：%s\n", gl_CurUser.username);
-        printf("统计月份：%04d-%02d\n", startdate.year, startdate.month);
-        printf("当月销售额：%d 元\n", amount);
+        printf("\n--- Statistics Result ---\n");
+        printf("Clerk: %s\n", gl_CurUser.username);
+        printf("Month: %04d-%02d\n", startdate.year, startdate.month);
+        printf("Monthly Sales: %d\n", amount);
         break;
 
-    case 'Q':
-    case 'q':
+    case 'R':
+    case 'r':
         return;
 
     default:
-        printf("无效选项！\n");
+        printf("Invalid choice!\n");
         break;
     }
 }
+
 void StaSales_UI_Clerk(void)
 {
     int id;
@@ -177,39 +169,39 @@ void StaSales_UI_Clerk(void)
     char Usrname[30];
     account_t account;
     int amount;
-    printf("\n========================================\n");
-    printf("          统计售票员销售额\n");
-    printf("========================================\n");
-    printf("请输入售票员姓名: ");
-    fgets(Usrname, sizeof(Usrname), stdin);
-    Usrname[strcspn(Usrname, "\n")] = 0;
+    system(CLEAR);
+    printf("\n==================================================================\n");
+    printf("********************* Clerk Sales Statistics *********************\n");
+    printf("Please input clerk username: ");
+    scanf("%29s", Usrname);
+    clear_input_buffer();
     if (!Account_Srv_FetchByName(Usrname, &account))
     {
-        printf("用户 \"%s\" 不存在！\n", Usrname);
+        printf("User \"%s\" does not exist!\n", Usrname);
         return;
     }
 
     id = account.id;
-    printf("找到用户：%s (ID: %d, 类型: %s)\n", account.username, account.id,
-           account.type == USR_CLERK ? "售票员" : "经理");
+    printf("Found user: %s (ID: %d, Type: %s)\n", account.username, account.id,
+           account.type == USR_CLERK ? "Clerk" : "Manager");
 
     if (account.type != USR_CLERK)
     {
-        printf("错误：只能统计售票员的销售额！\n");
+        printf("Error: only clerk accounts are allowed here!\n");
         return;
     }
 
-    printf("\n请输入开始日期(格式: yyyy mm dd): ");
+    printf("\nPlease input start date (yyyy mm dd): ");
     scanf("%d %d %d", &startdate.year, &startdate.month, &startdate.day);
-    printf("请输入结束日期(格式: yyyy mm dd): ");
+    printf("Please input end date (yyyy mm dd): ");
     scanf("%d %d %d", &enddate.year, &enddate.month, &enddate.day);
-    clear_input();
+    clear_input_buffer();
 
     amount = StaSales_Srv_CompSaleVal(id, startdate, enddate);
 
-    printf("\n--- 统计结果 ---\n");
-    printf("售票员：%s (ID: %d)\n", account.username, id);
-    printf("统计区间：%04d-%02d-%02d 至 %04d-%02d-%02d\n", startdate.year, startdate.month,
+    printf("\n--- Statistics Result ---\n");
+    printf("Clerk: %s (ID: %d)\n", account.username, id);
+    printf("Range: %04d-%02d-%02d to %04d-%02d-%02d\n", startdate.year, startdate.month,
            startdate.day, enddate.year, enddate.month, enddate.day);
-    printf("销售额：%d 元\n", amount);
+    printf("Sales Amount: %d\n", amount);
 }

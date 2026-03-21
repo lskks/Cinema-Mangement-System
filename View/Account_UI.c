@@ -49,7 +49,16 @@ int Account_UI_Add(account_list_t list)
     scanf("%29s", user.password);
     user.username[ACCOUNT_NAME_LEN - 1] = '\0';
     user.password[ACCOUNT_PWD_LEN - 1] = '\0';
-    user.type = USR_CLERK;
+    printf("Please enter the account type (1 for Clerk, 2 for Manager): ");
+    int type;
+    scanf("%d", &type);
+    if (type != USR_CLERK && type != USR_MANG && type != USR_ADMIN)
+    {
+        fprintf(stderr, "Invalid account type. Please enter 1 or 2.\n");
+        return 0;
+    }
+    user.type = (account_type_t)type;
+    clear_input_buffer();
 
     if (!Account_Srv_Add(&user))
     {
@@ -148,7 +157,7 @@ int Account_UI_Query(account_list_t list, char username[])
     }
 
     printf("%5s  %18s  %10s\n", "ID", "Name", "Type");
-    printf("%5d  %18s  %10d\n", user->data.id, user->data.username, user->data.type);
+    printf("%5d  %18s  %10s\n", user->data.id, user->data.username, account_type2str(user->data.type));
     
     return 1;
 }
@@ -181,7 +190,7 @@ void Account_UI_MgtEntry()
         printf("------------------------------------------------------------------\n");
         Paging_ViewPage_ForEach(list, paging, account_node_t, pos, i)
         {
-            printf("%5d  %18s  %10d\n", pos->data.id, pos->data.username, pos->data.type);
+            printf("%5d  %18s  %10s\n", pos->data.id, pos->data.username, account_type2str(pos->data.type));
         }
 
         printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",

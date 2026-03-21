@@ -88,7 +88,7 @@ void Main_Menu(void) {
 		case 'T':
 		case 't':
 			system(CLEAR);
-			Sale_UI_MgtEnt();
+			Sale_UI_MgtEntry();
 			break;
 		case 'R':
 		case 'r':
@@ -98,12 +98,16 @@ void Main_Menu(void) {
 		case 'N':
 		case 'n':
 			system(CLEAR);
-			SalesAnalysis_UI_MgtEntry();
+			if (SysLogin()) {
+				SalesAnalysis_UI_MgtEntry();
+			}
 			break;
 		case 'A':
 		case 'a':
 			system(CLEAR);
-			Account_UI_MgtEntry();
+			if (SysLogin()) {
+				Account_UI_MgtEntry();
+			}
 			break;
 		}
 	} while ('E' != choice && 'e' != choice);

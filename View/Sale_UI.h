@@ -6,7 +6,7 @@
 
 #define SALE_PAGE_SIZE 5
 
-void Sale_UI_MgtEnt();
+void Sale_UI_MgtEntry();
 
 void Sale_UI_ShowSheduler(int playID);
 
