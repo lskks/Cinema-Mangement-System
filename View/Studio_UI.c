@@ -108,7 +108,6 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		case 's':
 		case 'S':
-			system(CLEAR);
 			printf("Input the ID:");
 			scanf("%d", &id);
 			clear_input_buffer();

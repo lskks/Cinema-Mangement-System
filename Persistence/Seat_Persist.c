@@ -37,7 +37,7 @@ int Seat_Perst_Insert(seat_t *data)
     if (key <= 0) // 主键分配失败，直接返回
         return 0;
     data->id = key; // 赋给新对象带回到UI层
-    FILE *fp = fopen(SEAT_DATA_FILE, "ab");
+    FILE *fp = fopen(SEAT_DATA_FILE, "ab+");
     int rtn = 0;
     if (NULL == fp)
     {
@@ -78,7 +78,7 @@ int Seat_Perst_InsertBatch(seat_list_t list)
         return 0;
     }
 
-    FILE *fp = fopen(SEAT_DATA_FILE, "ab");
+    FILE *fp = fopen(SEAT_DATA_FILE, "ab+");
     if (NULL == fp)
     {
         fprintf(stderr, "Error: Cannot open file %s!\n", SEAT_DATA_FILE);
@@ -159,7 +159,7 @@ int Seat_Perst_DeleteByID(int ID)
         return 0;
     }
 
-    fpTarg = fopen(SEAT_DATA_FILE, "wb");
+    fpTarg = fopen(SEAT_DATA_FILE, "wb+");
     if (NULL == fpTarg)
     {
         printf("Cannot open file %s!\n", SEAT_DATA_TEMP_FILE);
@@ -197,7 +197,7 @@ int Seat_Perst_DeleteByID(int ID)
 */
 int Seat_Perst_DeleteAllByRoomID(int roomID)
 {
-	Studio_Perst_DeleteByID(roomID);
+    Studio_Perst_DeleteByID(roomID);
     return 0;
 }
 
@@ -209,29 +209,32 @@ int Seat_Perst_DeleteAllByRoomID(int roomID)
 */
 int Seat_Perst_SelectByID(int ID, seat_t *buf)
 {
-	assert(NULL!= buf);
+    assert(NULL != buf);
 
-	FILE *fp = fopen(SEAT_DATA_FILE, "rb");
-	if (NULL == fp) {
-		return 0;
-	}
+    FILE *fp = fopen(SEAT_DATA_FILE, "rb+");
+    if (NULL == fp)
+    {
+        return 0;
+    }
 
-	seat_t data;
-	int found = 0;
+    seat_t data;
+    int found = 0;
 
-	while (!feof(fp)) {
-		if (fread(&data, sizeof(seat_t), 1, fp)) {
-			if (ID == data.id) {
-				*buf = data;
-				found = 1;
-				break;
-			};
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(seat_t), 1, fp))
+        {
+            if (ID == data.id)
+            {
+                *buf = data;
+                found = 1;
+                break;
+            };
+        }
+    }
+    fclose(fp);
 
-		}
-	}
-	fclose(fp);
-
-	return found;
+    return found;
 }
 
 /*
@@ -242,34 +245,37 @@ int Seat_Perst_SelectByID(int ID, seat_t *buf)
 */
 int Seat_Perst_SelectAll(seat_list_t list)
 {
-	seat_node_t *newNode;
-	seat_t data;
-	int recCount = 0;
+    seat_node_t *newNode;
+    seat_t data;
+    int recCount = 0;
 
-	assert(NULL!=list);
+    assert(NULL != list);
 
-	List_Free(list, seat_node_t);
+    List_Free(list, seat_node_t);
 
-	FILE *fp = fopen(SEAT_DATA_FILE, "rb");
-	if (NULL == fp) {
-		return 0;
-	}
+    FILE *fp = fopen(SEAT_DATA_FILE, "rb+");
+    if (NULL == fp)
+    {
+        return 0;
+    }
 
-	while (!feof(fp)) {
-		if (fread(&data, sizeof(seat_t), 1, fp)) {
-			newNode = (seat_node_t*) malloc(sizeof(seat_node_t));
-			if (!newNode) {
-				printf(
-						"Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
-				break;
-			}
-			newNode->data = data;
-			List_AddTail(list, newNode);
-			recCount++;
-		}
-	}
-	fclose(fp);
-	return recCount;
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(seat_t), 1, fp))
+        {
+            newNode = (seat_node_t *)malloc(sizeof(seat_node_t));
+            if (!newNode)
+            {
+                printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+                break;
+            }
+            newNode->data = data;
+            List_AddTail(list, newNode);
+            recCount++;
+        }
+    }
+    fclose(fp);
+    return recCount;
 }
 
 /*
@@ -280,28 +286,39 @@ int Seat_Perst_SelectAll(seat_list_t list)
 */
 int Seat_Perst_SelectByRoomID(seat_list_t list, int roomID)
 {
-	int recCount = 0;
+    int recCount = 0;
 
-	FILE* fp = fopen(SEAT_DATA_FILE, "rb");
-	if (NULL == fp) {
-		return 0;
-	}
+    FILE *fp = fopen(SEAT_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        fp = fopen(SEAT_DATA_FILE, "ab+");
+        if (NULL == fp)
+        {
+            fprintf(stderr, "Cannot open file %s!\n", SEAT_DATA_FILE);
+            return 0;
+        }
+        rewind(fp);
+    }
 
-	seat_t data;
-	while (!feof(fp)) {
-		if (fread(&data, sizeof(seat_t), 1, fp)) {
-			if (data.roomID == roomID) {
-				seat_node_t *newNode = (seat_node_t*) malloc(sizeof(seat_node_t));
-				if (!newNode) {
-					printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
-					break;
-				}
-				newNode->data = data;
-				List_AddTail(list, newNode);
-				recCount++;
-			}
-		}
-	}
-	fclose(fp);
-	return recCount;
+    seat_t data;
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(seat_t), 1, fp))
+        {
+            if (data.roomID == roomID)
+            {
+                seat_node_t *newNode = (seat_node_t *)malloc(sizeof(seat_node_t));
+                if (!newNode)
+                {
+                    printf("Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+                    break;
+                }
+                newNode->data = data;
+                List_AddTail(list, newNode);
+                recCount++;
+            }
+        }
+    }
+    fclose(fp);
+    return recCount;
 }

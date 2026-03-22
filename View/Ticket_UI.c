@@ -126,5 +126,6 @@ int Ticket_UI_ShowTicket(int ticket_id)
     }
     printf("The infomation of the ticket: \n");
     printf("ID: %d\nPrice: %d\nSchedule ID:%d\nSeat ID: %d, Status: %d", ticket->id, ticket->price, ticket->schedule_id, ticket->seat_id, ticket->status);
+    system(CLEAR);
     return 1;
 }

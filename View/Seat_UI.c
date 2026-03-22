@@ -57,12 +57,7 @@ inline seat_status_t Seat_UI_Char2Status(char statusChar)
 	return SEAT_NONE;
 }
 
-/*
-标识符：TTMS_SCU_Seat_UI_MgtEnt
-函数功能：界面层管理座位的入口函数，显示当前的座位数据，并提供座位数据添加、修改、删除功能操作的入口。
-参数说明：roomID为整型，是需要设置座位的演出厅ID。
-返 回 值：无。
-*/
+
 void show_info(studio_t studio)
 {
     printf("------------------------------------------------------------------\n");
@@ -124,10 +119,12 @@ void Seat_UI_MgtEntry(int roomID)
         case 'a':
             system(CLEAR);
             show_info(studio);
-            printf("Input row to add (1-%d):\nInput column to add (1-%d):", studio.rowsCount,
-                   studio.colsCount);
+            
+            printf("Input row to add (1-%d): ", studio.rowsCount);
             scanf("%d", &row);
+            printf("Input column to add (1-%d):", studio.colsCount);
             scanf("%d", &col);
+
             clear_input_buffer();
             if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
             {
@@ -150,6 +147,7 @@ void Seat_UI_MgtEntry(int roomID)
         case 'u':
             system(CLEAR);
             show_info(studio);
+            clear_input_buffer();
             printf("Input row to update (1-%d):", studio.rowsCount);
             scanf("%d", &row);
             printf("Input column to update (1-%d):", studio.colsCount);
@@ -219,7 +217,7 @@ void Seat_UI_MgtEntry(int roomID)
 返 回 值：整型，表示是否成功添加了座位的标志。
 */
 int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
-{ // ����һ����λ
+{
     if (list == NULL)
     {
         printf("Error: seat list is null.\n");
@@ -229,7 +227,7 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
     {
         printf("Error: invalid studio ID, row, or column.\n");
         return 0;
-    }
+    }   
     seat_list_t current = list;
     while (current != NULL)
     {
