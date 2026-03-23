@@ -15,7 +15,7 @@
 void Sale_UI_MgtEntry()
 {
     int id , i = 0;
-    char name[30];
+    // char name[30];
     sale_list_t list;
     sale_node_t *pos;
 
@@ -194,7 +194,6 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
     seat_node_t* seat;
     ticket_t ticket;
     sale_t sale;
-    account_t clerk;
 
     printf("Sell Ticket\n");
     printf("Please enter the row and column of the seat you want to sell: ");
@@ -225,7 +224,7 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
     sale.ticket_id = ticket.id;
     sale.date = DateNow();
     sale.time = TimeNow();
-    sale.user_id = clerk.id;
+    sale.user_id = gl_CurUser.id;
     sale.value = ticket.price;
     sale.type = SALE_SELL;
 

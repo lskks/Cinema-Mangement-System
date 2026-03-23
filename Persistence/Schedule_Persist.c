@@ -1,5 +1,6 @@
 #include "../Service/Schedule.h"
 #include "../Common/List.h"
+#include "EntityKey_Persist.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -84,6 +85,15 @@ int Schedule_Perst_SelectByID(schedule_list_t list, int play_id) {
 int Schedule_Perst_Insert(schedule_t *data)
 {
     assert(NULL != data);
+
+    long key = EntKey_Perst_GetNewKeys("schedule", 1);
+    if (key <= 0)
+    {
+        fprintf(stderr, "Allocting key failed\n");
+        return 0;
+    }
+
+    data->id = key;
 
     FILE *fp = fopen(SCHEDULE_DATA_FILE, "ab");
     if (NULL == fp) {

@@ -62,6 +62,9 @@ void Schedule_UI_MgtEntry(int playID)
         case 'a':
         case 'A':
             system(CLEAR);
+            printf("Play ID: ");
+            scanf("%d", &playID);
+            clear_input_buffer();
             Schedule_UI_Add(playID);
             paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
             List_Paging(list, paging, schedule_node_t);
@@ -130,10 +133,7 @@ int Schedule_UI_Add(int playID)
 
     printf("=======================================================\n");
     printf("********************** Add New Schedule *******************\n");
-    printf("Schedule ID: ");
-    scanf("%d", &data.id);
-    printf("Play ID: ");
-    scanf("%d", &data.play_id);
+    data.play_id = playID;
     printf("Studio ID: ");
     scanf("%d", &data.studio_id);
     printf("End Date (YYYY MM DD): ");
