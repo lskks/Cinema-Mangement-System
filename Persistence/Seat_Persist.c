@@ -197,8 +197,37 @@ int Seat_Perst_DeleteByID(int ID)
 */
 int Seat_Perst_DeleteAllByRoomID(int roomID)
 {
-    Studio_Perst_DeleteByID(roomID);
-    return 0;
+    if (roomID <= 0) return 0;
+
+    if (rename(SEAT_DATA_FILE, SEAT_DATA_TEMP_FILE) != 0) {
+        // 如果原文件不存在，返回成功（无座位可删）
+        if (access(SEAT_DATA_FILE, F_OK) != 0) return 1;
+        return 0;
+    }
+
+    FILE *fp_old = fopen(SEAT_DATA_TEMP_FILE, "rb");
+    FILE *fp_new = fopen(SEAT_DATA_FILE, "wb");
+    if (!fp_old || !fp_new) {
+        if (fp_old) fclose(fp_old);
+        if (fp_new) fclose(fp_new);
+        rename(SEAT_DATA_TEMP_FILE, SEAT_DATA_FILE);
+        return 0;
+    }
+
+    seat_t seat;
+    int deleted = 0;
+    while (fread(&seat, sizeof(seat_t), 1, fp_old) == 1) {
+        if (seat.roomID == roomID) {
+            deleted++;   // 跳过这个座位，不写入新文件
+        } else {
+            fwrite(&seat, sizeof(seat_t), 1, fp_new);
+        }
+    }
+
+    fclose(fp_old);
+    fclose(fp_new);
+    remove(SEAT_DATA_TEMP_FILE);
+    return deleted > 0 ? 1 : 0;
 }
 
 /*

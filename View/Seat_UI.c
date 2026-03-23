@@ -346,19 +346,19 @@ int Seat_UI_Modify(seat_list_t list, int row, int column)
 */
 int Seat_UI_Delete(seat_list_t list, int row, int column)
 {
-    seat_node_t *p = list;
+    seat_node_t *pos;
     seat_node_t *prev = NULL;
     int found = 0;
     char confirm;
-    while (p != NULL)
+    List_ForEach(list, pos)
     {
-        if (p->data.row == row && p->data.column == column)
+        if (pos->data.row == row && pos->data.column == column)
         {
             found = 1;
             break;
         }
-        prev = p;
-        p = p->next;
+        prev = pos;
+        pos = pos->next;
     }
     if (!found)
     {
@@ -367,11 +367,11 @@ int Seat_UI_Delete(seat_list_t list, int row, int column)
     }
     printf("========== Seat Deletion ==========\n");
     printf("Seat to delete:\n");
-    printf("  Seat ID: %d\n", p->data.id);
-    printf("  Studio ID: %d\n", p->data.roomID);
-    printf("  Position: row %d, col %d\n", p->data.row, p->data.column);
+    printf("  Seat ID: %d\n", pos->data.id);
+    printf("  Studio ID: %d\n", pos->data.roomID);
+    printf("  Position: row %d, col %d\n", pos->data.row, pos->data.column);
     printf("  Current status: ");
-    switch (p->data.status)
+    switch (pos->data.status)
     {
     case SEAT_NONE:
         printf("None\n");
@@ -395,7 +395,7 @@ int Seat_UI_Delete(seat_list_t list, int row, int column)
         printf("Operation cancelled.\n");
         return 0;
     }
-    int result = Seat_Srv_DeleteAllByRoomID(p->data.id);
+    int result = Seat_Srv_DeleteByID(pos->data.id);
     if (result == 1)
     {
         printf("Success: seat deleted.\n");

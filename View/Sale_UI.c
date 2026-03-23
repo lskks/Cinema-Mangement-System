@@ -38,11 +38,12 @@ void Sale_UI_MgtEntry()
         system(CLEAR);
         printf("\n==================================================================\n");
         printf("********************** Sale **********************\n");
-        printf("%5s  %18s  %10s\n", "ID", "Name", "Type");
+        printf("%5s  %5s  %5s %5s \n", "ID", "Ticket_ID", "Type", "Price");
         printf("------------------------------------------------------------------\n");
         Paging_ViewPage_ForEach(list, paging, sale_node_t, pos, i)
         {
-            printf(" a");
+            printf("%5ld %5d %5d %5d", pos->data.id, pos->data.ticket_id,
+                pos->data.type,pos->data.value);
         }
             printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",
                    paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
@@ -61,7 +62,7 @@ void Sale_UI_MgtEntry()
                 printf("Please enter the ID of the play you want to search: ");
                 scanf("%d", &id);
                 clear_input_buffer();
-                Sale_UI_ShowSheduler(id);
+                Sale_UI_ShowScheduler(id);
                 break;
             case 's':
             case 'S':
@@ -99,7 +100,7 @@ void Sale_UI_MgtEntry()
     List_Destroy(list, sale_node_t);
 }
 
-void Sale_UI_ShowSheduler(int playID)
+void Sale_UI_ShowScheduler(int playID)
 {
     Pagination_t paging;
     int i = 0;
@@ -227,6 +228,7 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
     sale.user_id = gl_CurUser.id;
     sale.value = ticket.price;
     sale.type = SALE_SELL;
+    sale.id = seat->data.id;
 
     Sale_Srv_Add(&sale);
     
@@ -265,6 +267,7 @@ void Sale_UI_RefundTicket()
     refound.type = SALE_REFOUND;
     refound.value = -ticket.price;
 
+    Ticket_Srv_Modify(&ticket);
     Sale_Srv_Add(&refound);
     system(CLEAR);
     return;

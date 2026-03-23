@@ -32,13 +32,13 @@ int StaSales_Srv_CompSaleVal(int usrID, user_date_t stDate, user_date_t endDate)
     {
         if (pSale->data.type == 1)
         {
-            if (DateCmp(pSale->data.sale_date, stDate) >= 0 &&
-                DateCmp(pSale->data.sale_date, endDate) <= 0)
+            if (DateCmp(pSale->data.date, stDate) >= 0 &&
+                DateCmp(pSale->data.date, endDate) <= 0)
             {
                 amount += pSale->data.value;
                 printf("业务逻辑层:累加记录-日期=%04d-%02d-%02d,金额=%d,当前总计=%d\n",
-                       pSale->data.sale_date.year, pSale->data.sale_date.month,
-                       pSale->data.sale_date.day, pSale->data.value, amount);
+                       pSale->data.date.year, pSale->data.date.month,
+                       pSale->data.date.day, pSale->data.value, amount);
             }
         }
     }

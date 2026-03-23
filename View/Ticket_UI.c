@@ -118,7 +118,7 @@ void Ticket_UI_Query()
 
 int Ticket_UI_ShowTicket(int ticket_id)
 {
-    ticket_t* ticket;
+    ticket_t* ticket = malloc(sizeof(ticket_t));
     if (Ticket_Srv_FetchByID(ticket_id, ticket) != 1)
     {
         fprintf(stderr, "Cann't find the ticket %d\n", ticket_id);

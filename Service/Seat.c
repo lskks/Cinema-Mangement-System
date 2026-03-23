@@ -182,56 +182,30 @@ int Seat_Srv_FetchByRoomID(seat_list_t list, int roomID)
 
 int Seat_Srv_FetchValidByRoomID(seat_list_t list, int roomID)
 {
+    seat_node_t *pos;
     if (list == NULL)
     {
-        printf("����ͷָ��Ϊ��\n");
+        printf("list is null\n");
         return -1;
     }
     if (roomID <= 0)
     {
-        printf("�ݳ���ID���Ϸ�\n");
+        printf("id is less than 0\n");
         return -1;
     }
 
-    seat_list_t all_seats = NULL;
-    int count1 = Seat_Perst_SelectByRoomID(all_seats, roomID);
-    if (count1 <= 0)
+    int seatCount = Seat_Perst_SelectByRoomID(list, roomID);
+
+    List_ForEach(list, pos)
     {
-        return 0;
+        if (pos->data.status != SEAT_GOOD)
+            seatCount--;
     }
 
-    seat_node_t *p = all_seats;
-    seat_node_t *new_node;
-    int count2 = 0;
+    List_Destroy(list, seat_node_t);
+    Seat_Srv_SortSeatList(list);
+    return seatCount;
 
-    while (p != NULL)
-    {
-        if (p->data.status == SEAT_GOOD)
-        {
-            new_node = (seat_node_t *)malloc(sizeof(seat_node_t));
-            new_node->data = p->data;
-            new_node->prev = NULL;
-            new_node->next = list;
-            if (list != NULL)
-            {
-                (list)->prev = new_node;
-            }
-            list = new_node;
-            count2++;
-        }
-        p = p->next;
-    }
-
-    p = all_seats;
-    seat_node_t *temp;
-    while (p != NULL)
-    {
-        temp = p;
-        p = p->next;
-        free(temp);
-    }
-
-    return count2;
 }
 
 /*
