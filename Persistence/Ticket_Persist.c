@@ -210,3 +210,32 @@ int Ticket_Perst_SelByID(int id, ticket_t* buf)
     fclose(fp);
     return found;
 }
+
+int Ticket_Perst_Update(const ticket_t *data)
+{
+	assert(NULL!=data);
+
+	FILE *fp = fopen(TICKET_DATA_FILE, "rb+");
+	if (NULL == fp) {
+		fprintf(stderr, "open file %s! failed\n", TICKET_DATA_FILE);
+		return 0;
+	}
+
+	ticket_t buf;
+	int found = 0;
+
+	while (!feof(fp)) {
+		if (fread(&buf, sizeof(ticket_t), 1, fp)) {
+			if (buf.id == data->id) {
+				fseek(fp, -((int)sizeof(ticket_t)), SEEK_CUR);
+				fwrite(data, sizeof(ticket_t), 1, fp);
+				found = 1;
+				break;
+			}
+
+		}
+	}
+	fclose(fp);
+
+	return found;
+}

@@ -155,6 +155,8 @@ int Sale_Perst_SelByID(sale_list_t list, int usrID)
                     break;
                 }
                 newNode->data = data;
+                List_AddTail(list, newNode);
+                recCount = 1;
             }
         }
     }

@@ -9,6 +9,8 @@ int Ticket_Perst_Insert(ticket_list_t list, int schedule_id);
 // TTMS_SCU_Ticket_Perst_Rem - 根据演出计划ID去除演出票
 int Ticket_Perst_Rem(int schedule_id);
 
+int Ticket_Perst_Update(const ticket_t *data);
+
 int Ticket_Perst_SelByID(int id, ticket_t* buf);
 
 int Ticket_Perst_SelAll(ticket_list_t list);

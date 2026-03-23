@@ -53,3 +53,8 @@ int Ticket_Srv_FetchByID(int id, ticket_t* buf)
 {
     return Ticket_Perst_SelByID(id, buf);
 }
+
+int Ticket_Srv_Modify(const ticket_t *data)
+{
+    return Ticket_Perst_Update(data);
+}

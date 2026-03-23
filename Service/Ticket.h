@@ -33,4 +33,6 @@ int Ticket_Srv_FetchByID(int id, ticket_t *buf);
 
 int Ticket_Srv_FetchAll(ticket_list_t list);
 
+int Ticket_Srv_Modify(const ticket_t *data);
+
 #endif /* TICKET_H_ */

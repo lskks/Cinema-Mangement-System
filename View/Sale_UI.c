@@ -5,6 +5,7 @@
 #include "../Service/Sale.h"
 #include "../Service/Seat.h"
 #include "../Service/Play.h"
+#include "../Service/Ticket.h"
 #include "Account.h"
 #include "Schedule.h"
 #include "Ticket_UI.h"
@@ -191,7 +192,10 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
 {
     int row, col;
     seat_node_t* seat;
-    (void)ticket_list;
+    ticket_t ticket;
+    sale_t sale;
+    account_t clerk;
+
     printf("Sell Ticket\n");
     printf("Please enter the row and column of the seat you want to sell: ");
     scanf("%d %d", &row, &col);
@@ -203,8 +207,30 @@ int Sale_UI_Sell_Ticket(ticket_list_t ticket_list, seat_list_t seat_list)
         return -1;
     }
 
-    // Ticket_Srv_FetchBy(seat->data.id
-    // Sale_Srv_Add(seat->data.id);
+    if (Ticket_Srv_FetchByID(seat->data.id, &ticket) == 0)
+    {
+        fprintf(stderr, "Ticket not found\n");
+        return -1;
+    }
+
+    if (ticket.status != TICKET_AVL)
+    {
+        printf("Ticket %d has been sold", ticket.id);
+        return -1;
+    }
+
+    ticket.status = TICKET_SOLD;
+    Ticket_Srv_Modify(&ticket);
+
+    sale.ticket_id = ticket.id;
+    sale.date = DateNow();
+    sale.time = TimeNow();
+    sale.user_id = clerk.id;
+    sale.value = ticket.price;
+    sale.type = SALE_SELL;
+
+    Sale_Srv_Add(&sale);
+    
     return 0;
 
 }
@@ -231,6 +257,8 @@ void Sale_UI_RefundTicket()
         system(CLEAR);
         return;
     }
+
+    ticket.status = TICKET_RESV;
 
     sale_t refound;
     refound.ticket_id = ticket.id;
