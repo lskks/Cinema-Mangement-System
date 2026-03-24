@@ -14,8 +14,8 @@
 #include "../Service/Seat.h"
 
 #include "../Common/List.h"
-#include "../Service/Studio.h"
 #include "../Common/common.h"
+#include "../Service/Studio.h"
 #include <stdio.h>
 
 /*
@@ -54,11 +54,56 @@ inline seat_status_t Seat_UI_Char2Status(char statusChar)
     case ' ':
         return SEAT_NONE;
     }
-	return SEAT_NONE;
+    return SEAT_NONE;
 }
 
+void show_seat_list(seat_list_t list)
+{
+    seat_node_t *p;
+    int maxRow = 0, maxCol = 0;
 
-void show_info(studio_t studio)
+    if (list == NULL)
+    {
+        printf("Seat Map: no seat data.\n");
+        return;
+    }
+
+    List_ForEach(list, p)
+    {
+        if (p->data.row > maxRow)
+            maxRow = p->data.row;
+        if (p->data.column > maxCol)
+            maxCol = p->data.column;
+    }
+
+    if (maxRow == 0 || maxCol == 0)
+    {
+        printf("Seat Map: no seats.\n");
+        return;
+    }
+
+    printf("Seat Map (#: good, ~: bad, blank: no seat)\n");
+    printf("     ");
+    for (int col = 1; col <= maxCol; col++)
+    {
+        printf("%2d ", col);
+    }
+    printf("\n");
+
+    for (int row = 1; row <= maxRow; row++)
+    {
+        printf("R%2d ", row);
+        for (int col = 1; col <= maxCol; col++)
+        {
+            seat_node_t *seat = Seat_Srv_FindByRowCol(list, row, col);
+            char seatChar = (seat == NULL) ? ' ' : Seat_UI_Status2Char(seat->data.status);
+            printf(" %c ", seatChar);
+        }
+        printf("\n");
+    }
+}
+
+void show_info(studio_t studio, seat_list_t list)
 {
     printf("------------------------------------------------------------------\n");
     printf("Studio ID: %d\n", studio.id);
@@ -67,7 +112,10 @@ void show_info(studio_t studio)
     printf("Column Count: %d\n", studio.colsCount);
     printf("Seats Count: %d\n", studio.seatsCount);
     printf("------------------------------------------------------------------\n");
+    show_seat_list(list);
+    printf("------------------------------------------------------------------\n");
 }
+
 
 void Seat_UI_MgtEntry(int roomID)
 {
@@ -93,7 +141,8 @@ void Seat_UI_MgtEntry(int roomID)
             {
                 studio.seatsCount = studio.rowsCount * studio.colsCount;
                 Studio_Srv_Modify(&studio);
-                printf("Seat initialization succeeded! Total initialized: %d.\n", studio.seatsCount);
+                printf("Seat initialization succeeded! Total initialized: %d.\n",
+                       studio.seatsCount);
             }
             else
             {
@@ -104,108 +153,110 @@ void Seat_UI_MgtEntry(int roomID)
         {
             printf("Seats loaded successfully! Total seats: %d.\n", seatCount);
         }
-        system(CLEAR);
-        printf("==================================================================\n");
-        printf("************************ Seat Management ************************\n");
-        show_info(studio);
-        printf("[A]dd Seat | [U]pdate Seat | [D]elete Seat | [R]eturn\n");
-        printf("==================================================================\n");
-        printf("Your Choice:");
-        scanf(" %c", &choice);
-        clear_input_buffer();
-        switch (choice)
-        {
-        case 'A':
-        case 'a':
-            system(CLEAR);
-            show_info(studio);
-            
-            printf("Input row to add (1-%d): ", studio.rowsCount);
-            scanf("%d", &row);
-            printf("Input column to add (1-%d):", studio.colsCount);
-            scanf("%d", &col);
 
-            clear_input_buffer();
-            if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
-            {
-                if (Seat_UI_Add(list, roomID, row, col))
-                {
-                    studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
-                    Studio_Srv_Modify(&studio);
-                }
-            }
-            else
-            {
-                printf("Row or column out of range!\n");
-                printf("Please retry.\n");
-            }
-            List_Destroy(list, seat_node_t);
-            List_Init(list, seat_node_t);
-            Seat_Srv_FetchByRoomID(list, roomID);
-            break;
-        case 'U':
-        case 'u':
+        do
+        {
             system(CLEAR);
-            show_info(studio);
+            printf("==================================================================\n");
+            printf("************************ Seat Management ************************\n");
+            show_info(studio, list);
+            printf("[A]dd Seat | [U]pdate Seat | [D]elete Seat | [R]eturn\n");
+            printf("==================================================================\n");
+            printf("Your Choice:");
+            scanf(" %c", &choice);
             clear_input_buffer();
-            printf("Input row to update (1-%d):", studio.rowsCount);
-            scanf("%d", &row);
-            printf("Input column to update (1-%d):", studio.colsCount);
-            scanf("%d", &col);
-            clear_input_buffer();
-            if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
+            switch (choice)
             {
-                if (Seat_UI_Modify(list, row, col))
+            case 'A':
+            case 'a':
+                system(CLEAR);
+                show_info(studio, list);
+
+                printf("Input row to add (1-%d): ", studio.rowsCount);
+                scanf("%d", &row);
+                printf("Input column to add (1-%d):", studio.colsCount);
+                scanf("%d", &col);
+
+                clear_input_buffer();
+                if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
                 {
-                    // 更新演出厅座位数统计
-                    studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
-                    Studio_Srv_Modify(&studio);
+                    if (Seat_UI_Add(list, roomID, row, col))
+                    {
+                        studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
+                        Studio_Srv_Modify(&studio);
+                    }
                 }
-            }
-            else
-            {
-                printf("Row or column out of range!\n");
-                printf("Please retry.\n");
-            }
-            List_Destroy(list, seat_node_t);
-            List_Init(list, seat_node_t);
-            Seat_Srv_FetchByRoomID(list, roomID);
-            break;
-        case 'D':
-        case 'd':
-            system(CLEAR);
-            show_info(studio);
-            printf("Input row to delete (1-%d):", studio.rowsCount);
-            scanf("%d", &row);
-            clear_input_buffer();
-            printf("Input column to delete (1-%d):", studio.colsCount);
-            scanf("%d", &col);
-            clear_input_buffer();
-            if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
-            {
-                if (Seat_UI_Delete(list, row, col))
+                else
                 {
-                    // 更新演出厅座位数统计
-                    studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
-                    Studio_Srv_Modify(&studio);
+                    printf("Row or column out of range!\n");
+                    printf("Please retry.\n");
                 }
+                List_Destroy(list, seat_node_t);
+                List_Init(list, seat_node_t);
+                Seat_Srv_FetchByRoomID(list, roomID);
+                break;
+            case 'U':
+            case 'u':
+                system(CLEAR);
+                show_info(studio, list);
+                // clear_input_buffer();
+                printf("Input row to update (1-%d):", studio.rowsCount);
+                scanf("%d", &row);
+                printf("Input column to update (1-%d):", studio.colsCount);
+                scanf("%d", &col);
+                clear_input_buffer();
+                if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
+                {
+                    if (Seat_UI_Modify(list, row, col))
+                    {
+                        // 更新演出厅座位数统计
+                        studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
+                        Studio_Srv_Modify(&studio);
+                    }
+                }
+                else
+                {
+                    printf("Row or column out of range!\n");
+                    printf("Please retry.\n");
+                }
+                List_Destroy(list, seat_node_t);
+                List_Init(list, seat_node_t);
+                Seat_Srv_FetchByRoomID(list, roomID);
+                break;
+            case 'D':
+            case 'd':
+                system(CLEAR);
+                show_info(studio, list);
+                printf("Input row to delete (1-%d):", studio.rowsCount);
+                scanf("%d", &row);
+                clear_input_buffer();
+                printf("Input column to delete (1-%d):", studio.colsCount);
+                scanf("%d", &col);
+                clear_input_buffer();
+                if (row >= 1 && row <= studio.rowsCount && col >= 1 && col <= studio.colsCount)
+                {
+                    if (Seat_UI_Delete(list, row, col))
+                    {
+                        // 更新演出厅座位数统计
+                        studio.seatsCount = Seat_Srv_FetchByRoomID(list, roomID);
+                        Studio_Srv_Modify(&studio);
+                    }
+                }
+                else
+                {
+                    printf("Row or column out of range!\n");
+                    printf("Please retry.\n");
+                }
+                List_Destroy(list, seat_node_t);
+                List_Init(list, seat_node_t);
+                Seat_Srv_FetchByRoomID(list, roomID);
+                break;
+            case 'R':
+            case 'r':
+                return;
+                break;
             }
-            else
-            {
-                printf("Row or column out of range!\n");
-                printf("Please retry.\n");
-            }
-            List_Destroy(list, seat_node_t);
-            List_Init(list, seat_node_t);
-            Seat_Srv_FetchByRoomID(list, roomID);
-            break;
-        case 'R':
-        case 'r':
-            break;
-        default:
-            printf("Invalid input, please retry.\n");
-            break;
-        }
+        } while (choice != 'r' || choice != 'R');
     }
 }
 
@@ -227,17 +278,17 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
     {
         printf("Error: invalid studio ID, row, or column.\n");
         return 0;
-    }   
-    seat_list_t current = list;
-    while (current != NULL)
+    }
+    seat_node_t *current;
+    List_ForEach(list, current)
     {
         if (current->data.roomID == roomID && current->data.row == row &&
             current->data.column == column)
         {
-            printf("Error: seat already exists (Studio %d - Row %d, Col %d).\n", roomID, row, column);
+            printf("Error: seat already exists (Studio %d - Row %d, Col %d).\n", roomID, row,
+                   column);
             return 0;
         }
-        current = current->next;
     }
     seat_t newSeat;
     newSeat.roomID = roomID;
@@ -265,18 +316,17 @@ int Seat_UI_Add(seat_list_t list, int roomID, int row, int column)
 */
 int Seat_UI_Modify(seat_list_t list, int row, int column)
 {
-    seat_node_t *p = list;
+    seat_node_t *p = NULL;
     seat_t seat;
     int found = 0;
     char statusChar;
-    while (p != NULL)
+    List_ForEach(list, p)
     {
         if (p->data.row == row && p->data.column == column)
         {
             found = 1;
             break;
         }
-        p = p->next;
     }
     if (!found)
     {
@@ -347,7 +397,6 @@ int Seat_UI_Modify(seat_list_t list, int row, int column)
 int Seat_UI_Delete(seat_list_t list, int row, int column)
 {
     seat_node_t *pos;
-    seat_node_t *prev = NULL;
     int found = 0;
     char confirm;
     List_ForEach(list, pos)
@@ -357,8 +406,6 @@ int Seat_UI_Delete(seat_list_t list, int row, int column)
             found = 1;
             break;
         }
-        prev = pos;
-        pos = pos->next;
     }
     if (!found)
     {

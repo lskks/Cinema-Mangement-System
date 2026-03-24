@@ -61,40 +61,15 @@ int Seat_Perst_InsertBatch(seat_list_t list)
 {
     seat_node_t *pos;
     assert(NULL != list);
-    int len = 0, rtn = 0;
+    int rtn = 0;
 
     List_ForEach(list, pos)
     {
         if (Seat_Perst_Insert(&pos->data))
         {
-            len++;
-        }
-    }
-
-    long key = EntKey_Perst_GetNewKeys(SEAT_KEY_NAME, len);
-    if (key <= 0)
-    {
-        fprintf(stderr, "Error: Cannot get new keys for %s!\n", SEAT_KEY_NAME);
-        return 0;
-    }
-
-    FILE *fp = fopen(SEAT_DATA_FILE, "ab+");
-    if (NULL == fp)
-    {
-        fprintf(stderr, "Error: Cannot open file %s!\n", SEAT_DATA_FILE);
-        return 0;
-    }
-
-    List_ForEach(list, pos)
-    {
-        pos->data.id = key++;
-        if (fwrite(&pos->data, sizeof(seat_t), 1, fp))
-        {
             rtn++;
         }
     }
-
-    fclose(fp);
 
     return rtn;
 }

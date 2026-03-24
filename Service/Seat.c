@@ -51,8 +51,8 @@ int Seat_Srv_AddBatch(seat_list_t list)
         perror("链表为空\n");
         return -1;
     }
-    seat_node_t *p = list;
-    while (p != NULL)
+    seat_node_t *p;
+    List_ForEach(list, p)
     {
         if (p->data.roomID <= 0 || p->data.row <= 0 || p->data.column <= 0)
         {
@@ -63,7 +63,6 @@ int Seat_Srv_AddBatch(seat_list_t list)
         {
             return -1;
         }
-        p = p->next;
     }
 
     int loop = Seat_Perst_InsertBatch(list);
@@ -80,18 +79,18 @@ int Seat_Srv_Modify(const seat_t *data)
     // 参数校验
     if (data == NULL)
     {
-        printf("����Ϊ��\n");
+        printf("list head is NULL\n");
         return -1;
     }
 
     if (data->id <= 0 || data->roomID <= 0 || data->row <= 0 || data->column <= 0)
     {
-        printf("没有传入正确的座位状态\n");
+        printf("seat status is error\n");
         return -1;
     }
     if (data->status != SEAT_NONE && data->status != SEAT_GOOD && data->status != SEAT_BROKEN)
     {
-        printf("没有传入正确的座位状态\n");
+        printf("seat status is error\n");
         return -1;
     }
 
@@ -127,12 +126,12 @@ int Seat_Srv_FetchByID(int ID, seat_t *buf)
 
     if (ID <= 0)
     {
-        printf("座位ID不合法\n");
+        printf("seat id is invalid\n");
         return -1;
     }
     if (buf == NULL)
     {
-        printf("缓冲区指针为空\n");
+        printf("buf is null\n");
         return -1;
     }
 
@@ -168,12 +167,12 @@ int Seat_Srv_FetchByRoomID(seat_list_t list, int roomID)
     // 参数校验
     if (list == NULL)
     {
-        printf("链表头指针为空\n");
+        printf("list is NULL\n");
         return -1;
     }
     if (roomID <= 0)
     {
-        printf("演出厅ID不合法\n");
+        printf("Studio id is invalid\n");
         return -1;
     }
 
@@ -195,14 +194,16 @@ int Seat_Srv_FetchValidByRoomID(seat_list_t list, int roomID)
     }
 
     int seatCount = Seat_Perst_SelectByRoomID(list, roomID);
+    if (seatCount <= 0)
+    {
+        return seatCount;
+    }
 
     List_ForEach(list, pos)
     {
         if (pos->data.status != SEAT_GOOD)
             seatCount--;
     }
-
-    List_Destroy(list, seat_node_t);
     Seat_Srv_SortSeatList(list);
     return seatCount;
 
@@ -218,12 +219,12 @@ int Seat_Srv_RoomInit(seat_list_t list, int roomID, int rowsCount, int colsCount
     // 参数校验
     if (list == NULL)
     {
-        printf("链表头指针为空\n");
+        printf("list head pointer is NULL\n");
         return -1;
     }
     if (roomID <= 0)
     {
-        printf("演出厅ID不合法\n");
+        printf("Studio id is invalid\n");
         return -1;
     }
     if (rowsCount <= 0 || colsCount <= 0)
@@ -234,7 +235,6 @@ int Seat_Srv_RoomInit(seat_list_t list, int roomID, int rowsCount, int colsCount
 
     seat_node_t *new_node;
     int row, col;
-    int seat_id = 1;
 
     for (row = 1; row <= rowsCount; row++)
     {
@@ -243,23 +243,17 @@ int Seat_Srv_RoomInit(seat_list_t list, int roomID, int rowsCount, int colsCount
             new_node = (seat_node_t *)malloc(sizeof(seat_node_t));
             if (new_node == NULL)
             {
-                perror("内存分配失败");
+                perror("allocate memory failed");
                 return -1;
             }
 
-            new_node->data.id = seat_id++;
+            new_node->data.id = 0;
             new_node->data.roomID = roomID;
             new_node->data.row = row;
             new_node->data.column = col;
             new_node->data.status = SEAT_GOOD;
 
-            new_node->prev = NULL;
-            new_node->next = list;
-            if (list != NULL)
-            {
-                list->prev = new_node;
-            }
-            list = new_node;
+            List_AddTail(list, new_node);
         }
     }
 
@@ -317,48 +311,38 @@ void Seat_Srv_SortSeatList(seat_list_t list)
 */
 void Seat_Srv_AddToSoftedList(seat_list_t list, seat_node_t *node)
 {
-    // 参数校验
-    if (list == NULL)
+    seat_node_t *p;
+    int inserted = 0;
+    if (list == NULL || node == NULL)
     {
-        node->prev = NULL;
-        node->next = NULL;
-        list = node;
         return;
     }
 
-    seat_node_t *p = list;
-    while (p != NULL)
+    List_ForEach(list, p)
     {
         if (p->data.row > node->data.row)
         {
+            List_InsertBefore(p, node);
+            inserted = 1;
             break;
         }
         else if (p->data.row == node->data.row && p->data.column > node->data.column)
         {
+            List_InsertBefore(p, node);
+            inserted = 1;
             break;
         }
-        else if (p->next == NULL)
+        if (p->next == list)
         {
-            p->next = node;
-            node->prev = p;
-            node->next = NULL;
-            return;
+            List_AddTail(list, node);
+            inserted = 1;
+            break;
         }
-        p = p->next;
     }
-
-    node->next = p;
-    node->prev = p->prev;
-    if (p->prev != NULL)
+    if (!inserted)
     {
-        p->prev->next = node;
+        List_AddTail(list, node);
     }
-    else
-    {
-
-        list = node;
-    }
-    p->prev = node;
 }
 
 /*
@@ -369,15 +353,15 @@ void Seat_Srv_AddToSoftedList(seat_list_t list, seat_node_t *node)
 */
 seat_node_t *Seat_Srv_FindByRowCol(seat_list_t list, int row, int column)
 {
-    // 参数校验
-    seat_node_t *p = list;
-    while (p != NULL)
+    seat_node_t *p;
+    if (list == NULL)
+    {
+        return NULL;
+    }
+    List_ForEach(list, p)
     {
         if (p->data.row == row && p->data.column == column)
-        {
             return p;
-        }
-        p = p->next;
     }
     return NULL;
 }
@@ -389,15 +373,15 @@ seat_node_t *Seat_Srv_FindByRowCol(seat_list_t list, int row, int column)
 */
 seat_node_t *Seat_Srv_FindByID(seat_list_t list, int rowID)
 {
-    // 参数校验
-    seat_node_t *p = list;
-    while (p != NULL)
+    seat_node_t *p;
+    if (list == NULL)
+    {
+        return NULL;
+    }
+    List_ForEach(list, p)
     {
         if (p->data.id == rowID)
-        {
             return p;
-        }
-        p = p->next;
     }
     return NULL;
 }
