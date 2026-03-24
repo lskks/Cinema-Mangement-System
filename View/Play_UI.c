@@ -116,13 +116,13 @@ void Play_UI_MgtEntry(void)
             break;
         case 's':
         case 'S':
-            system(CLEAR);
+            // system(CLEAR);
             printf("Input the play ID to search: ");
             scanf("%d", &id);
             clear_input_buffer();
             if (Play_UI_Query(id))
             {
-                system(CLEAR);
+                // system(CLEAR);
                 Schedule_UI_MgtEntry(id);
             }
             break;
