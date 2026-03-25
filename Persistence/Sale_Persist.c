@@ -56,7 +56,7 @@ int Tickect_Perst_Update(const ticket_t *data)
         }
     }
 
-    fprintf(stderr, "ticket not found");
+    // fprintf(stderr, "ticket not found");
     fclose(fp);
     return rtn;
 }

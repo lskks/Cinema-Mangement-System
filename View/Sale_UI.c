@@ -15,6 +15,21 @@ static const int TICKET_PAGE_SIZE = 10;
 
 void List_Foreach(ticket_list_t list, int id);
 
+char* StatusToStr(int status)
+{
+    switch (status)
+    {
+    case 0:
+        return "Available";
+    case 1:
+        return "Sold";
+    case 9:
+        return "Reversed";
+    default:
+        return "Unknown";
+    }
+}
+
 void Sale_UI_MgtEntry()
 {
 
@@ -227,9 +242,9 @@ int Sale_UI_ShowTicket(int schedule_id)
                "Status\n");
         Paging_ViewPage_ForEach(ticket_list, paging, ticket_node_t, pos, i)
         {
-            printf("  %5d               %5d            %5d      %5d                     %5d\n",
+            printf("  %5d               %5d            %5d      %5d                     %5s\n",
                    pos->data.id, pos->data.schedule_id, pos->data.seat_id, pos->data.price,
-                   pos->data.status);
+                   StatusToStr(pos->data.status));
         }
 
         printf("------Total Records  : %2d ------------------------Page %2d / "
@@ -275,15 +290,13 @@ int Sale_UI_SellTicket(ticket_list_t list_t, seat_list_t list_s)
 {
     seat_node_t *seat = NULL;
     sale_t data_t;
-    int row, col;
+    int id;
     while (1)
     {
-        printf("please input the row you want to buy :");
-        scanf("%d", &row);
-        printf("please input the col you want to buy :");
-        scanf("%d", &col);
-        getchar();
-        seat = Seat_Srv_FindByRowCol(list_s, row, col);
+        printf("please input the ticket ID you want to buy :");
+        scanf("%d", &id);
+        clear_input_buffer();
+        seat = Seat_Srv_FindByID(list_s, id);
 
         if (NULL == seat)
         {
@@ -291,7 +304,7 @@ int Sale_UI_SellTicket(ticket_list_t list_t, seat_list_t list_s)
             continue;
         }
 
-        if (seat->data.status == '@')
+        if (seat->data.status == '~')
         {
             printf("the seat is broken!\n\n");
         }

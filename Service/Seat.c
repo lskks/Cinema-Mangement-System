@@ -374,15 +374,7 @@ seat_node_t *Seat_Srv_FindByRowCol(seat_list_t list, int row, int column)
 */
 seat_node_t *Seat_Srv_FindByID(seat_list_t list, int rowID)
 {
-    seat_node_t *p;
-    if (list == NULL)
-    {
-        return NULL;
-    }
-    List_ForEach(list, p)
-    {
-        if (p->data.id == rowID)
-            return p;
-    }
-    return NULL;
+    seat_node_t* buf = malloc(sizeof(seat_node_t));
+    Seat_Perst_SelectByID(rowID, &buf->data);
+    return buf;
 }
