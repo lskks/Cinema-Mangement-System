@@ -15,6 +15,7 @@ int Ticket_Srv_DeleteBatch(int schedule_id) {
     // b) 返回found
     return found;
 }
+
 int Ticket_Srv_GenBatch(int schedule_id) {
     seat_list_t seat_head = NULL;
     schedule_t schedule;

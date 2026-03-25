@@ -270,6 +270,7 @@ void Seat_Srv_SortSeatList(seat_list_t list)
     // 参数校验
     if (list == NULL || list->next == NULL)
     {
+        fprintf(stderr, "list is NULL");
         return;
     }
 
@@ -277,10 +278,10 @@ void Seat_Srv_SortSeatList(seat_list_t list)
     seat_t tmp;
     int change;
 
-    for (p = list; p->next != NULL; p = p->next)
+    List_ForEach(list, p)
     {
         change = 0;
-        for (q = list; q->next != NULL; q = q->next)
+        List_ForEach(list, q)
         {
             if (q->data.row > q->next->data.row)
             {

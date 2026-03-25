@@ -3,6 +3,7 @@
 #include "EntityKey_Persist.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <assert.h>
 
@@ -179,3 +180,4 @@ int Schedule_Perst_DeleteByID(int id) {
     List_Destroy(list, schedule_node_t);
     return 1;
 }
+
