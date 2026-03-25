@@ -97,8 +97,8 @@ void Studio_UI_MgtEntry(void) {
 			break;
 		case 'u':
 		case 'U':
-			system(CLEAR);
-			printf("Input the ID:");
+			// system(CLEAR);
+			printf("Input the room ID you want to update:");
 			scanf("%d", &id);
 			clear_input_buffer();
 			if (Studio_UI_Modify(id)) {	//从新载入数据
@@ -113,8 +113,7 @@ void Studio_UI_MgtEntry(void) {
 			clear_input_buffer();
 			Seat_UI_MgtEntry(id);
 			paging.totalRecords = Studio_Srv_FetchAll(head);
-			List_Paging(head, paging, studio_node_t)
-			;
+			List_Paging(head, paging, studio_node_t);
 			break;
 		case 'p':
 		case 'P':

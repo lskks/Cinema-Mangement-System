@@ -73,7 +73,7 @@ void Play_UI_MgtEntry(void)
         printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",
                paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
         printf("******************************************************************\n");
-        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [C]reate Ticket| [R]eturn");
+        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [S]chedule | [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
         scanf(" %c", &choice);
@@ -114,12 +114,13 @@ void Play_UI_MgtEntry(void)
                 List_Paging(list, paging, play_node_t);
             }
             break;
-        case 'c':
-        case 'C':
+        case 's':
+        case 'S':
             // system(CLEAR);
             printf("Input the play ID to schedule: ");
             scanf("%d", &id);
             clear_input_buffer();
+            system(CLEAR);
             if (Play_UI_Query(id))
             {
                 system(CLEAR);

@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 static const char TICKET_DATA_FILE[] = "Ticket.dat";
 
 static const char TICKET_DATA_TEMP_FILE[] = "TicketTmp.dat";
@@ -21,10 +22,10 @@ int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
     FILE *fp = fopen(TICKET_DATA_FILE, "ab+");
 
     int rtn = 0;
+    int inserted = 0;
     seat_list_t temp;
     seat_list_t pos;
     schedule_t sch;
-    int sum = 0;
 
     ticket_t data;
 
@@ -38,12 +39,15 @@ int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
 
     Play_Perst_SelectByID(sch.play_id, &buf);
 
-    int key = EntKey_Perst_GetNewKeys(TICKET_KEY_NAME, 1);
     temp = list;
     pos = list->next;
     while (pos != temp)
     {
-        sum++;
+        if (pos->data.status != SEAT_GOOD)
+        {
+            pos = pos->next;
+            continue;
+        }
 
         data.id = EntKey_Perst_GetNewKeys(TICKET_KEY_NAME, 1);
         data.schedule_id = schedule_id;
@@ -52,10 +56,14 @@ int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
         data.status = 0;
         pos = pos->next;
         rtn = fwrite(&data, sizeof(ticket_t), 1, fp);
+        if (rtn == 1)
+        {
+            inserted++;
+        }
     }
 
     fclose(fp);
-    return rtn;
+    return inserted;
 }
 
 int Ticket_Perst_Rem(int schedule_id)

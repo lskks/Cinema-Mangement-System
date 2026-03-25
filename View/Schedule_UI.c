@@ -88,10 +88,10 @@ void Schedule_UI_MgtEntry(int playID)
             break;
             case 's':
             case 'S':
-            // system(CLEAR);
             printf("Enter the schedule ID to query: ");
             scanf("%d", &id);
             clear_input_buffer();
+            system(CLEAR);
             if (Schedule_Srv_FetchByID(id, &buf) == 0)
             {
                 fprintf(stderr, "Schedule not found.\n");
