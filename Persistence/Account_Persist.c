@@ -375,3 +375,36 @@ int Account_Perst_SelectByName(char *username, account_t *buf)
     fclose(fp);
     return found;
 }
+
+int Account_Perst_SelectByID(int userID, account_t* data)
+{
+    if (NULL == data)
+    {
+        return 0;
+    }
+
+    FILE *fp = fopen(ACCOUNT_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        printf("Cannot open file %s!\n", ACCOUNT_DATA_FILE);
+        return 0;
+    }
+
+    account_t buf;
+    int found = 0;
+
+    while (fread(&buf, sizeof(account_t), 1, fp) == 1)
+    {
+        buf.username[ACCOUNT_NAME_LEN - 1] = '\0';
+        buf.password[ACCOUNT_PWD_LEN - 1] = '\0';
+        if (buf.id == userID)
+        {
+            memcpy(data, &buf, sizeof(account_t));
+            found = 1;
+            break;
+        }
+    }
+
+    fclose(fp);
+    return found;
+}

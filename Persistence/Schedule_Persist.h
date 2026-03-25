@@ -4,12 +4,8 @@
 
 #include "../Service/Schedule.h"
 
-// 标识符：TTMS_SCU_Schedule_Perst_SelAll
-// 功能：载入全部演出计划
 int Schedule_Perst_SelectAll(schedule_list_t list);
 
-// 标识符：TTMS_SCU_Schedule_Perst_SelByPlay
-// 功能：根据剧目ID载入演出计划
 int Schedule_Perst_SelectByID(schedule_list_t list, int play_id);
 
 int Schedule_Perst_Insert(schedule_t *data);
@@ -18,6 +14,6 @@ int Schedule_Perst_Modify(schedule_t *data);
 
 int Schedule_Perst_DeleteByID(int id);
 
-
+void Schedule_Perst_SelectByIDForSchedule(schedule_t *buf, int id);
 
 #endif /* SCHEDULE_PERSIST_H_ */

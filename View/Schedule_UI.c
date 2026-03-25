@@ -44,7 +44,7 @@ void Schedule_UI_MgtEntry(int playID)
         printf("------------------------------------------------------------------\n");
         Paging_ViewPage_ForEach(list, paging, schedule_node_t, pos, i)
         {
-            printf("%4d  %-8d  %-8d  %-8d  %-6d  %-5.2d\n", pos->data.id,
+            printf("%4d  %-8d  %-9d  %-9d  %-6d  %-5.2d\n", pos->data.id,
                    pos->data.play_id, pos->data.studio_id, pos->data.seat_count,
                    data.duration, data.price);
         }
@@ -61,10 +61,7 @@ void Schedule_UI_MgtEntry(int playID)
         {
         case 'a':
         case 'A':
-            system(CLEAR);
-            printf("Play ID: ");
-            scanf("%d", &playID);
-            clear_input_buffer();
+            // system(CLEAR);
             Schedule_UI_Add(playID);
             paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
             List_Paging(list, paging, schedule_node_t);
@@ -129,27 +126,39 @@ void Schedule_UI_MgtEntry(int playID)
 int Schedule_UI_Add(int playID)
 {
     schedule_t data;
+    studio_t studio;
+    play_t play;
+
+    Play_Srv_FetchByID(playID, &play);
+
     memset(&data, 0, sizeof(schedule_t));
 
     printf("=======================================================\n");
     printf("********************** Add New Schedule *******************\n");
     data.play_id = playID;
-    printf("Studio ID: ");
-    scanf("%d", &data.studio_id);
+
+    do {
+        printf("Studio ID: ");
+        scanf("%d", &data.studio_id);
+        clear_input_buffer();
+    } while (!Studio_Srv_FetchByID(data.studio_id, &studio));
     printf("End Date (YYYY MM DD): ");
     scanf("%d %d %d", &data.date.year, &data.date.month, &data.date.day);
     printf("End Time (HH MM SS): ");
     scanf("%d %d %d", &data.time.hour, &data.time.minute, &data.time.second);
-    printf("Price: ");
-    scanf("%f", &data.price);
+    data.price = play.price;
     printf("Status of Schedule (0-Not Started, 1-Started, 2-Ended): ");
     scanf("%d", &data.status);
+    data.seat_count = studio.seatsCount;
     clear_input_buffer();
     printf("=======================================================\n");
 
     if (Schedule_Srv_Add(&data))
     {
         printf("Schedule added successfully! ID=%d\n", data.id);
+        printf("Press Enter to continue...");
+        getchar();
+        system(CLEAR);
         return 1;
     }
 

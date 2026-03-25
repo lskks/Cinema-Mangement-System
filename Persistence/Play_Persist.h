@@ -12,4 +12,6 @@ int Play_Perst_SelectByID(int ID, play_t* buf);
 
 int Play_Perst_SelectAll(play_list_t list);
 
+int Play_Perst_SelectByName(play_list_t list, char* condt);
+
 #endif

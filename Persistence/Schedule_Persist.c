@@ -98,6 +98,7 @@ int Schedule_Perst_Insert(schedule_t *data)
 
     FILE *fp = fopen(SCHEDULE_DATA_FILE, "ab");
     if (NULL == fp) {
+        fprintf(stderr, "open file failed: %s\n", SCHEDULE_DATA_FILE);
         return 0;
     }
 
@@ -181,3 +182,28 @@ int Schedule_Perst_DeleteByID(int id) {
     return 1;
 }
 
+void Schedule_Perst_SelectByIDForSchedule(schedule_t *buf, int id)
+{
+    assert(NULL != buf);
+
+    FILE *fp = fopen(SCHEDULE_DATA_FILE, "rb");
+    if (NULL == fp) {
+        fprintf(stderr, "open file failed: %s\n", SCHEDULE_DATA_FILE);
+        return;
+    }
+
+    schedule_t data;
+    int found = 0;
+
+    while (!feof(fp)) {
+        if (fread(&data, sizeof(schedule_t), 1, fp)) {
+            if (data.id == id) {
+                *buf = data;
+                found = 1;
+                break;
+            }
+        }
+    }
+
+    fclose(fp);
+}

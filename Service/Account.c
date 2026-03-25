@@ -77,3 +77,10 @@ int Account_Srv_FetchByName(char* userName, account_t* data)
     
     return Account_Perst_SelectByName(userName, data);
 }
+
+int Account_Srv_FetchByID(int userID, account_t* data)
+{
+    assert(NULL != data);
+    
+    return Account_Perst_SelectByID(userID, data);
+}

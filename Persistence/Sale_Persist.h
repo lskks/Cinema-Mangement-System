@@ -11,7 +11,7 @@ int Sale_Perst_Insert(sale_t* data);
 
 int Tickect_Perst_Update(const ticket_t* data);
 
-int Ticket_Srv_SelBySchedule(int id, ticket_list_t list);
+int Ticket_Persit_SelBySchedule(int id, ticket_list_t list);
 
 int Sale_Perst_SeclectAll(sale_list_t list);
 

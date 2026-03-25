@@ -50,10 +50,12 @@ int Play_Srv_DeleteByID(int ID);
 
 int Play_Srv_FetchByID(int ID, play_t *buf);
 
-
-
 int Play_Srv_FetchAll(play_list_t list);
 
 play_node_t *Play_Srv_FindByID(play_list_t list, int ID);
+
+int Play_Srv_FetchByName(play_list_t list, char condt[]);
+
+void Play_Srv_Print(play_list_t list, char s[]);
 
 #endif

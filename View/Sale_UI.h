@@ -1,19 +1,14 @@
-#ifndef SEAT_UI_H_
-#define SEAT_UI_H_
-
-#include "../Service/Sale.h"
-#include "../Service/Seat.h"
-
-#define SALE_PAGE_SIZE 5
-
-void Sale_UI_MgtEntry();
+#ifndef SALE_UI_H_
+#define SALE_UI_H_
+#include"../Service/Seat.h"
+#include"../Service/Ticket.h"
+void Sale_UI_MgtEntry(void);
 
 void Sale_UI_ShowScheduler(int playID);
 
-int Sale_UI_SellTicket(ticket_list_t ticket_list, seat_list_t seat_list);
+int Sale_UI_SellTicket(ticket_list_t ticketList,seat_list_t seatList);
 
-void Sale_UI_RefundTicket();
+int Sale_UI_ShowTicket(int schedule_id);
 
-void Sale_UI_ShowTicket(int schedule_id);
-
+void Sale_UI_ReturnTicket();
 #endif

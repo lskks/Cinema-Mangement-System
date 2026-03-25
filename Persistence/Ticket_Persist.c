@@ -1,241 +1,263 @@
 #include "Ticket_Persist.h"
-#include "Schedule_Persist.h"
-#include "Play_Persist.h"
-#include "EntityKey_Persist.h"
-#include "../Service/Seat.h"
 #include "../Common/List.h"
+#include "../Persistence/Play_Persist.h"
+#include "../Persistence/Schedule_Persist.h"
+#include "../Service/Play.h"
+#include "../Service/Schedule.h"
+#include "../Service/Seat.h"
+#include "../Service/Ticket.h"
+#include "EntityKey_Persist.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+static const char TICKET_DATA_FILE[] = "Ticket.dat";
 
-const char TICKET_DATA_FILE[] = "Ticket.dat";
 static const char TICKET_DATA_TEMP_FILE[] = "TicketTmp.dat";
 
-int Ticket_Perst_Insert(ticket_list_t list, int schedule_id) {
-    FILE *fp;
-    schedule_t sch;
-    play_t play;
-    seat_node_t *pos;
-    ticket_t data;
-    int count = 0;
+static const char TICKET_KEY_NAME[] = "Ticket";
+
+int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
+{
+    FILE *fp = fopen(TICKET_DATA_FILE, "wb+");
+
     int rtn = 0;
-    int i;
-    long *new_ids;
+    seat_list_t temp;
+    seat_list_t pos;
+    schedule_t sch;
+    int sum = 0;
 
-    printf("持久化层：开始存储演出票\n");
+    ticket_t data;
 
-    // 1. 以追加方式打开票数据文件
-    fp = fopen(TICKET_DATA_FILE, "ab");
-    if (fp == NULL) {
-        printf("持久化层：无法打开票数据文件 %s\n", TICKET_DATA_FILE);
-        return -1;
+    if (NULL == fp)
+    {
+        printf("the file not exist!\n");
+        return 0;
     }
+    play_t buf;
+    Schedule_Perst_SelectByIDForSchedule(&sch, schedule_id);
 
-    // 2. 调用Schedule_Perst_SelectByID函数获取演出计划信息
-    if (Schedule_Srv_FetchByID(schedule_id, &sch) != 1) {
-        printf("持久化层：获取演出计划失败\n");
-        fclose(fp);
-        return -1;
-    }
+    Play_Perst_SelectByID(sch.play_id, &buf);
 
-    // 3. 调用Play_Perst_SelectByID函数获取剧目信息
-    if (Play_Srv_FetchByID(sch.play_id, &play) != 1) {
-        printf("持久化层：获取剧目信息失败\n");
-        fclose(fp);
-        return -1;
-    }
+    int key = EntKey_Perst_GetNewKeys(TICKET_KEY_NAME, 1);
+    temp = list;
+    pos = list->next;
+    while (pos != temp)
+    {
+        sum++;
 
-    // 4. 统计座位信息链表的长度
-    pos = (seat_node_t*)list;
-    if (pos != NULL) {
+        data.id = EntKey_Perst_GetNewKeys(TICKET_KEY_NAME, 1);
+        data.schedule_id = schedule_id;
+        data.seat_id = pos->data.id;
+        data.price = buf.price;
+        data.status = 0;
         pos = pos->next;
-        while (pos != (seat_node_t*)list) {
-            count++;
-            pos = pos->next;
-        }
+        rtn = fwrite(&data, sizeof(ticket_t), 1, fp);
     }
 
-    // 获取主键
-    new_ids = (long*)malloc(count * sizeof(long));
-    if (new_ids == NULL) {
-        fclose(fp);
-        return -1;
-    }
-
-    for (i = 0; i < count; i++) {
-        new_ids[i] = EntKey_Perst_GetNewKeys("Ticket", 1);
-    }
-
-    // 5. 遍历链表，构造票信息并写入文件
-    pos = (seat_node_t*)list;
-    if (pos != NULL) {
-        pos = pos->next;
-        i = 0;
-        while (pos != (seat_node_t*)list) {
-            data.id = new_ids[i];
-            data.schedule_id = schedule_id;
-            data.seat_id = pos->data.id;
-            data.price = play.price;
-            data.status = TICKET_AVL;
-
-            if (fwrite(&data, sizeof(ticket_t), 1, fp) == 1) {
-                rtn = 1;
-            } else {
-                rtn = 0;
-                break;
-            }
-
-            pos = pos->next;
-            i++;
-        }
-    }
-
-    printf("持久化层：成功写入 %d 张票\n", i);
-
-    // 6. 关闭文件
     fclose(fp);
-    free(new_ids);
-
     return rtn;
 }
 
-
-int Ticket_Perst_Rem(int schedule_id) {
-    FILE *fp_old, *fp_new;
-    ticket_t buf;
-    int found = 0;
-
-    printf("持久化层：开始删除演出计划ID=%d的票\n", schedule_id);
-
-    // a) 将票据数据文件改名
-    if (rename(TICKET_DATA_FILE, TICKET_DATA_TEMP_FILE) != 0) {
-        printf("持久化层：文件改名失败\n");
-        return -1;
-    }
-
-    // b) 以只读方式打开临时文件，只写方式打开新文件
-    fp_old = fopen(TICKET_DATA_TEMP_FILE, "rb");
-    fp_new = fopen(TICKET_DATA_FILE, "wb");
-
-    if (fp_old == NULL || fp_new == NULL) {
-        printf("持久化层：文件打开失败\n");
-        if (fp_old) fclose(fp_old);
-        if (fp_new) fclose(fp_new);
-        rename(TICKET_DATA_TEMP_FILE, TICKET_DATA_FILE);
-        return -1;
-    }
-
-    // c) 计数器清0，循环读取
-    found = 0;
-    while (!feof(fp_old)) {
-        // d) 从文件读出一条记录
-        if (fread(&buf, sizeof(ticket_t), 1, fp_old) != 1) {
-            break;
-        }
-
-        // e) 判断是否等于参数schedule_id
-        if (buf.schedule_id == schedule_id) {
-            found++; // 相等则计数加1，不写入新文件
-        } else {
-            // 不相等则写入新文件
-            fwrite(&buf, sizeof(ticket_t), 1, fp_new);
-        }
-    }
-
-    // f) 关闭文件，恢复原名，返回结果
-    fclose(fp_old);
-    fclose(fp_new);
-
-    remove(TICKET_DATA_TEMP_FILE);
-
-    printf("持久化层：共删除 %d 张票\n", found);
-    return found;
-}
-
-int Ticket_Perst_SelAll(ticket_list_t list)
+int Ticket_Perst_Rem(int schedule_id)
 {
-    ticket_node_t *newNode;
-	ticket_t data;
-	int recCount = 0;
-
-	assert(NULL!=list);
-
-	List_Free(list, ticket_node_t);
-
-	FILE *fp = fopen(TICKET_DATA_FILE, "rb");
-	if (NULL == fp) {
-		return 0;
-	}
-
-	while (!feof(fp)) {
-		if (fread(&data, sizeof(ticket_t), 1, fp)) {
-			newNode = (ticket_node_t*) malloc(sizeof(ticket_node_t));
-			if (!newNode) {
-				printf(
-						"Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
-				break;
-			}
-			newNode->data = data;
-			List_AddTail(list, newNode);
-			recCount++;
-		}
-	}
-	fclose(fp);
-	return recCount;
-}
-
-int Ticket_Perst_SelByID(int id, ticket_t* buf)
-{
-    int found = 0;
-    ticket_t data;
-    FILE* fp = fopen(TICKET_DATA_FILE, "rb");
-
-    if (fp == NULL)
+    if (rename(TICKET_DATA_FILE, TICKET_DATA_TEMP_FILE) < 0)
     {
-        fprintf(stderr, "open %s file faild\n", TICKET_DATA_FILE);
+        printf("shan chu piao shi bai \n");
         return 0;
     }
 
-    while (fread(&data, sizeof(ticket_t), 1, fp) == 1)
+    FILE *fpsour, *fpTarg;
+
+    fpsour = fopen(TICKET_DATA_TEMP_FILE, "rb");
+    if (NULL == fpsour)
     {
-        if (data.id == id)
+        printf("Cannot open the file %s\n", TICKET_DATA_FILE);
+        return 0;
+    }
+
+    fpTarg = fopen(TICKET_DATA_FILE, "wb");
+    if (NULL == fpTarg)
+    {
+        printf("Cannot open the file %s!\n", TICKET_DATA_TEMP_FILE);
+        return 0;
+    }
+
+    int found = 0;
+    ticket_t buf;
+    while (!feof(fpsour))
+    {
+        if (fread(&buf, sizeof(ticket_t), 1, fpsour))
         {
-            memcpy(buf, &data, sizeof(ticket_t));
-            found = 1;
-            break;
+            if (buf.schedule_id == schedule_id)
+            {
+                found += 1;
+                continue;
+            }
+            fwrite(&buf, sizeof(ticket_t), 1, fpTarg);
+        }
+    }
+
+    fclose(fpsour);
+    fclose(fpTarg);
+
+    remove(TICKET_DATA_TEMP_FILE);
+
+    return found;
+}
+
+int Ticket_Perst_SelectAll(ticket_list_t list)
+{
+    ticket_node_t *newNode;
+    ticket_t data;
+
+    assert(NULL != list);
+
+    List_Free(list, ticket_node_t);
+
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
+
+    if (NULL == fp)
+    {
+        return 0;
+    }
+
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(ticket_t), 1, fp))
+        {
+            newNode = (ticket_node_t *)malloc(sizeof(ticket_node_t));
+            if (!newNode)
+            {
+                printf("Waring ,Memory OverFlow !!!\n Cannot Load more Data into memory !!!\n");
+                break;
+            }
+            newNode->data = data;
+
+            List_AddTail(list, newNode);
         }
     }
 
     fclose(fp);
+
+    return 1;
+}
+
+int Ticket_Perst_SelByID(int id, ticket_t *buf)
+{
+    int found = 0;
+    ticket_t data;
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
+    if (fp == NULL)
+    {
+        return 0;
+    }
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(ticket_t), 1, fp))
+        {
+
+            if (id == data.seat_id)
+            {
+                *buf = data;
+                found = 1;
+                break;
+            }
+        }
+    }
+
+    fclose(fp);
+
     return found;
+}
+int Ticket_Perst_SelByticketID(int ticket_id, ticket_t *buf)
+{
+    int count = 0;
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
+    if (NULL == fp)
+    {
+        printf(" the file is not exit!!\n");
+        return 0;
+    }
+
+    ticket_t data;
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(ticket_t), 1, fp))
+        {
+            if (data.id == ticket_id)
+            {
+                *buf = data;
+                count = 1;
+                break;
+            }
+        }
+    }
+
+    fclose(fp);
+
+    return count;
+}
+int Ticket_Perst_SelBySchID(int id, ticket_list_t list)
+{
+
+    int count = 0;
+
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
+
+    if (NULL == fp)
+    {
+        printf("the file is not exit");
+        return 0;
+    }
+
+    ticket_t data;
+    ticket_node_t *newNode;
+
+    while (!feof(fp))
+    {
+        if (fread(&data, sizeof(ticket_t), 1, fp))
+        {
+            if (data.schedule_id == id)
+            {
+                count++;
+                newNode = (ticket_node_t *)malloc(sizeof(ticket_node_t));
+                newNode->data = data;
+                List_AddTail(list, newNode);
+            }
+        }
+    }
+
+    fclose(fp);
+    return count;
 }
 
 int Ticket_Perst_Update(const ticket_t *data)
 {
-	assert(NULL!=data);
 
-	FILE *fp = fopen(TICKET_DATA_FILE, "rb+");
-	if (NULL == fp) {
-		fprintf(stderr, "open file %s! failed\n", TICKET_DATA_FILE);
-		return 0;
-	}
+    assert(NULL != data);
+    int found = -1;
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb+");
 
-	ticket_t buf;
-	int found = 0;
+    if (NULL == fp)
+    {
+        printf("the file is not exit\n!");
+        return -1;
+    }
 
-	while (!feof(fp)) {
-		if (fread(&buf, sizeof(ticket_t), 1, fp)) {
-			if (buf.id == data->id) {
-				fseek(fp, -((int)sizeof(ticket_t)), SEEK_CUR);
-				fwrite(data, sizeof(ticket_t), 1, fp);
-				found = 1;
-				break;
-			}
-
-		}
-	}
-	fclose(fp);
-
-	return found;
+    ticket_t temp;
+    while (!feof(fp))
+    {
+        if (fread(&temp, sizeof(ticket_t), 1, fp))
+        {
+            if (temp.id == data->id)
+            {
+                fseek(fp, -((int)sizeof(ticket_t)), SEEK_CUR);
+                found = 1;
+                fwrite(data, sizeof(ticket_t), 1, fp);
+                break;
+            }
+        }
+    }
+    fclose(fp);
+    return found;
 }

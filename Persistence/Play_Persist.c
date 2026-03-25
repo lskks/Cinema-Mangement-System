@@ -4,6 +4,7 @@
 #include "../Common/List.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <assert.h>
 
@@ -155,4 +156,36 @@ int Play_Perst_SelectAll(play_list_t list) {
 	}
 	fclose(fp);
 	return recCount;
+}
+
+
+int Play_Perst_SelectByName(play_list_t list, char* condt)
+{	assert(NULL != list && NULL != condt);
+
+	FILE* fp = fopen(PLAY_DATA_FILE, "rb");
+	if (NULL == fp) {
+		return 0;
+	}
+
+	play_t data;
+	int found = 0;
+
+	while (!feof(fp)) {
+		if (fread(&data, sizeof(play_t), 1, fp)) {
+			if (strcmp(data.name, condt) == 0) {
+				play_node_t* newNode = (play_node_t*)malloc(sizeof(play_node_t));
+				if (!newNode) {
+					printf(
+						"Warning, Memory OverFlow!!!\n Cannot Load more Data into memory!!!\n");
+					break;
+				}
+				newNode->data = data;
+				List_AddTail(list, newNode);
+				found = 1;
+			}
+		}
+	}
+	fclose(fp);
+
+	return found;
 }

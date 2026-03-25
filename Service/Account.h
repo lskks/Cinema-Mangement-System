@@ -50,6 +50,8 @@ int Account_Srv_FetchAll(account_list_t list);
 
 int Account_Srv_FetchByName(char* userName, account_t* data);
 
+int Account_Srv_FetchByID(int userID, account_t* data);
+
 account_node_t* Account_Srv_FindByUserName(account_list_t list, char* userName);
 
 static inline char* account_type2str(account_type_t type)

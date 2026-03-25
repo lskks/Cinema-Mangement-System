@@ -14,7 +14,7 @@ int Sale_Srv_Modify(const ticket_t* data)
 
 int Sale_Srv_FetchBySchID(int id, ticket_list_t list)
 {
-    return Ticket_Srv_SelBySchedule(id, list);
+    return Ticket_Persit_SelBySchedule(id, list);
 }
 
 ticket_node_t* Sale_Srv_FetchBySeatID(int seat_id, ticket_list_t list)

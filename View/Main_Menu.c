@@ -88,11 +88,12 @@ void Main_Menu(void) {
 		case 't':
 			system(CLEAR);
 			Sale_UI_MgtEntry();
+			system(CLEAR);
 			break;
 		case 'R':
 		case 'r':
 			system(CLEAR);
-			Sale_UI_RefundTicket();
+			Sale_UI_ReturnTicket();
 			break;
 		case 'N':
 		case 'n':

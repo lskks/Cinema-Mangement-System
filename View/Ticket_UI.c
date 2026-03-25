@@ -1,131 +1,103 @@
-#include "Ticket_UI.h"
-#include "../Service/Ticket.h"
-#include "../Service/Schedule.h"
-#include "../Service/Play.h"
+#include "../View/Ticket_UI.h"
 #include "../Common/List.h"
-#include "../Common/common.h"
+#include "../Service/Account.h"
+#include "../Service/Schedule.h"
+#include "../Service/Ticket.h"
+// #include"../Service/Schedule.h"
+#include "../Service/Play.h"
+static const int TICKET_PAGE_SIZE = 5;
+
 #include <stdio.h>
-#include <stdlib.h>
 
-void Ticket_UI_MgtEntry(int schedule_id) {
-    schedule_t schedule;
-    play_t play;
-    char choice;
-    int result;
-    int rtn;
-
-    while (1) {
-        system(CLEAR);
-
-        printf("========================================\n");
-        printf("          Ticket Generation\n");
-        printf("========================================\n\n");
-
-        // a) 调用根据ID获取演出计划函数
-        rtn = Schedule_Srv_FetchByID(schedule_id, &schedule);
-        if (rtn != 1) {
-            printf("Schedule does not exist! (ID: %d)\n", schedule_id);
-            printf("Press Enter to return...");
-            getchar();
-            return;
-        }
-
-        // b) 使用剧目ID获取剧目信息
-        rtn = Play_Srv_FetchByID(schedule.play_id, &play);
-
-        // c) 在界面中显示信息
-        printf("--- Schedule Information ---\n");
-        printf("Schedule ID: %d\n", schedule.id);
-        if (rtn == 1) {
-            printf("Play Name: %s\n", play.name);
-            printf("Duration: %d minutes\n", play.duration);
-            printf("Base Price: %d\n", play.price);
-        }
-        printf("Studio ID: %d\n", schedule.studio_id);
-        printf("Date: %04d-%02d-%02d\n", schedule.date.year, schedule.date.month, schedule.date.day);
-        printf("Time: %02d:%02d:%02d\n", schedule.time.hour, schedule.time.minute, schedule.time.second);
-
-        // d) 显示功能菜单并接收用户输入
-        printf("Please choose an operation:\n");
-        printf("  G - Generate tickets\n");
-        printf("  R - Regenerate tickets\n");
-        printf("  Q - Return\n");
-        printf("Input your choice: ");
-        scanf(" %c", &choice);
-        clear_input_buffer();
-
-        switch (choice) {
-            case 'G':
-            case 'g':
-                // 调用业务逻辑层批量生成演出票
-                result = Ticket_Srv_GenBatch(schedule_id);
-                if (result >= 0) {
-                    printf("Ticket generation succeeded! Total: %d.\n", result);
-                } else {
-                    printf("Ticket generation failed!\n");
-                }
-                break;
-
-            case 'R':
-            case 'r':
-                // 先删除再生成
-                result = Ticket_Srv_DeleteBatch(schedule_id);
-                if (result >= 0) {
-                    printf("Deleted %d existing tickets.\n", result);
-                    result = Ticket_Srv_GenBatch(schedule_id);
-                    if (result >= 0) {
-                        printf("Ticket regeneration succeeded! Total: %d.\n", result);
-                    } else {
-                        printf("Regeneration failed!\n");
-                    }
-                } else {
-                    printf("Failed to delete existing tickets!\n");
-                }
-                break;
-
-            case 'Q':
-            case 'q':
-                printf("Returning...\n");
-                return;
-
-            default:
-                printf("Invalid choice! Please try again.\n");
-        }
-
-        // e) 等待用户确认后继续
-        printf("\nPress Enter to continue...");
+void Ticket_UI_MgtEntry(int schedule_id)
+{
+    if (gl_CurUser.type == USR_ANOMY || gl_CurUser.type == USR_ADMIN)
+    {
+        printf("you can't join in there!please input the [Enter]");
         getchar();
+        return;
+    }
+
+    int i, id;
+    int yan_id;
+    char choice;
+    schedule_t buf;
+    play_t data;
+
+    Schedule_Srv_FetchByID(schedule_id, &buf);
+    Play_Srv_FetchByID(buf.play_id, &data);
+
+    printf("=======================================================================\n");
+
+    printf("Name          Stduio ID                Date                  Time       \n");
+    printf("%s                 %d             %d.%d.%d               %d:%d:%d\n", data.name,
+           buf.studio_id, buf.date.year, buf.date.month, buf.date.day, buf.time.hour,
+           buf.time.minute, buf.time.second);
+
+    printf("[G]enerating tickets    [R]eproduction of tickets \n");
+    setbuf(stdin, NULL);
+    printf("Your choice:");
+    scanf("%c", &choice);
+    getchar();
+
+    switch (choice)
+    {
+    case 'G':
+    case 'g':
+        system("clear");
+        Ticket_Srv_GenBatch(schedule_id);
+        printf("Successlly!\n");
+        break;
+    case 'r':
+    case 'R':
+        Ticket_Srv_DeleteBatch(schedule_id);
+        Ticket_Srv_GenBatch(schedule_id);
+        printf("Successlly!\n");
+        break;
+    case 'q':
+    case 'Q':
+        Ticket_UI_Query();
+        break;
     }
 }
 
-void Ticket_UI_Query()
+void Ticket_UI_Query(void)
 {
-    ticket_list_t head;
-    ticket_node_t* pos = malloc(sizeof(ticket_node_t));
+    printf("==================================================\n");
+    printf("******************Find Ticket*********************\n");
+    printf("please input the id of the ticket :");
 
-    List_Init(head, ticket_node_t);
-    Ticket_Srv_FetchAll(head);
-
-    printf("\n==================================================================\n");
-    printf("********************** Ticket Query **********************\n");
-    printf("Please enter the id of ticket you want to query: ");
     int id;
     scanf("%d", &id);
-    Ticket_UI_ShowTicket(id);
+    getchar();
 
-    List_Destroy(head, ticket_node_t);
+    Ticket_UI_ShowTicket(id);
 }
 
 int Ticket_UI_ShowTicket(int ticket_id)
 {
-    ticket_t* ticket = malloc(sizeof(ticket_t));
-    if (Ticket_Srv_FetchByID(ticket_id, ticket) != 1)
+    ticket_t buf;
+    int temp = Ticket_Srv_FetchByID(ticket_id, &buf);
+    if (temp == 0)
     {
-        fprintf(stderr, "Cann't find the ticket %d\n", ticket_id);
-        return 0;
+        printf("the ticket is not exist!\n");
     }
-    printf("The infomation of the ticket: \n");
-    printf("ID: %d\nPrice: %d\nSchedule ID:%d\nSeat ID: %d, Status: %d", ticket->id, ticket->price, ticket->schedule_id, ticket->seat_id, ticket->status);
-    system(CLEAR);
+    else
+    {
+        printf(
+            "ticket ID      schedule ID      Seat ID      Ticket Price      Ticket status    \n");
+        printf("%6d  %6d     %6d    %6d   %6d    \n", buf.id, buf.schedule_id, buf.seat_id,
+               buf.price, buf.status);
+    }
     return 1;
+}
+
+void Ticket_UI_Print(const ticket_t data)
+{
+    printf("your ticket data : \n");
+    printf("Ticket ID      Schedule ID    Saet ID  Price\n");
+    printf("%d                  %d           %d      %d    \n", data.id, data.schedule_id,
+           data.seat_id, data.price);
+    printf("---------------------------------------\n");
+    getchar();
 }

@@ -5,10 +5,13 @@
 #include "Sale_Persist.h"
 #include "Ticket_Persist.h"
 
+
+#define TICKET_DATA_FILE "Ticket.dat"
+
 int Sale_Perst_Insert(sale_t *data)
 {
     long key = EntKey_Perst_GetNewKeys("sale", 1);
-    FILE *fp = fopen(SALE_DATA_FILE, "ab");
+    FILE *fp = fopen(SALE_DATA_FILE, "ab+");
 
     if (key <= 0)
     {
@@ -58,13 +61,13 @@ int Tickect_Perst_Update(const ticket_t *data)
     return rtn;
 }
 
-int Ticket_Srv_SelBySchedule(int id, ticket_list_t list)
+int Ticket_Persit_SelBySchedule(int id, ticket_list_t list)
 {
     int count = 0;
     List_Init(list, ticket_node_t);
     ticket_t *data;
 
-    FILE *fp = fopen(TICKET_DATA_FILE, "rb");
+    FILE *fp = fopen(TICKET_DATA_FILE, "rb+");
 
     if (fp == NULL)
     {
@@ -101,7 +104,7 @@ int Sale_Perst_SeclectAll(sale_list_t list)
 
     List_Free(list, sale_node_t);
 
-    FILE *fp = fopen(SALE_DATA_FILE, "rb");
+    FILE *fp = fopen(SALE_DATA_FILE, "rb+");
     if (NULL == fp)
     {
         return 0;
@@ -136,7 +139,7 @@ int Sale_Perst_SelByID(sale_list_t list, int usrID)
 
     List_Free(list, sale_node_t);
 
-    FILE *fp = fopen(SALE_DATA_FILE, "rb");
+    FILE *fp = fopen(SALE_DATA_FILE, "rb+");
     if (NULL == fp)
     {
         return 0;
