@@ -383,7 +383,7 @@ int Account_Perst_SelectByID(int userID, account_t* data)
         return 0;
     }
 
-    FILE *fp = fopen(ACCOUNT_DATA_FILE, "rb");
+    FILE *fp = fopen(ACCOUNT_DATA_FILE, "rb+");
     if (NULL == fp)
     {
         printf("Cannot open file %s!\n", ACCOUNT_DATA_FILE);

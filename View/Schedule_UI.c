@@ -61,7 +61,7 @@ void Schedule_UI_MgtEntry(int playID)
         {
         case 'a':
         case 'A':
-            // system(CLEAR);
+            system(CLEAR);
             Schedule_UI_Add(playID);
             paging.totalRecords = Schedule_Srv_FetchByPlay(list, playID);
             List_Paging(list, paging, schedule_node_t);
@@ -88,7 +88,7 @@ void Schedule_UI_MgtEntry(int playID)
             break;
             case 's':
             case 'S':
-            system(CLEAR);
+            // system(CLEAR);
             printf("Enter the schedule ID to query: ");
             scanf("%d", &id);
             clear_input_buffer();

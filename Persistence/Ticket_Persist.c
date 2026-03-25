@@ -18,7 +18,7 @@ static const char TICKET_KEY_NAME[] = "Ticket";
 
 int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
 {
-    FILE *fp = fopen(TICKET_DATA_FILE, "wb+");
+    FILE *fp = fopen(TICKET_DATA_FILE, "ab+");
 
     int rtn = 0;
     seat_list_t temp;
@@ -28,7 +28,7 @@ int Ticket_Perst_Insert(seat_list_t list, int schedule_id)
 
     ticket_t data;
 
-    if (NULL == fp)
+    if (NULL == list || NULL == fp)
     {
         printf("the file not exist!\n");
         return 0;

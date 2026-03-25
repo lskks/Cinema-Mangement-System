@@ -3,21 +3,14 @@
 #include "../Service/Account.h"
 #include "../Service/Schedule.h"
 #include "../Service/Ticket.h"
-// #include"../Service/Schedule.h"
 #include "../Service/Play.h"
+
 static const int TICKET_PAGE_SIZE = 5;
 
 #include <stdio.h>
 
 void Ticket_UI_MgtEntry(int schedule_id)
 {
-    if (gl_CurUser.type == USR_ANOMY || gl_CurUser.type == USR_ADMIN)
-    {
-        printf("you can't join in there!please input the [Enter]");
-        getchar();
-        return;
-    }
-
     int i, id;
     int yan_id;
     char choice;
@@ -34,7 +27,7 @@ void Ticket_UI_MgtEntry(int schedule_id)
            buf.studio_id, buf.date.year, buf.date.month, buf.date.day, buf.time.hour,
            buf.time.minute, buf.time.second);
 
-    printf("[G]enerating tickets    [R]eproduction of tickets \n");
+    printf("[G]enerating tickets | [R]eproduction of tickets | [Q]uery Tickets\n");
     setbuf(stdin, NULL);
     printf("Your choice:");
     scanf("%c", &choice);
@@ -44,15 +37,21 @@ void Ticket_UI_MgtEntry(int schedule_id)
     {
     case 'G':
     case 'g':
-        system("clear");
+        system(CLEAR);
         Ticket_Srv_GenBatch(schedule_id);
         printf("Successlly!\n");
+        printf("Please enter any key to continue...");
+        getchar();
+        system(CLEAR);
         break;
     case 'r':
     case 'R':
         Ticket_Srv_DeleteBatch(schedule_id);
         Ticket_Srv_GenBatch(schedule_id);
         printf("Successlly!\n");
+        printf("Please enter any key to continue...");
+        getchar();
+        system(CLEAR);
         break;
     case 'q':
     case 'Q':
@@ -81,6 +80,9 @@ int Ticket_UI_ShowTicket(int ticket_id)
     if (temp == 0)
     {
         printf("the ticket is not exist!\n");
+        printf("Please enter any key to continue...");
+        getchar();
+        system(CLEAR);
     }
     else
     {

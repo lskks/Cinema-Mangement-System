@@ -200,7 +200,7 @@ int Sale_UI_ShowTicket(int schedule_id)
     getchar();
     int seat = Seat_Srv_FetchValidByRoomID(list, studio_ID);
 
-    int i;
+    int i = 1;
     char choice;
     ticket_node_t *pos;
     Pagination_t paging;
@@ -216,14 +216,14 @@ int Sale_UI_ShowTicket(int schedule_id)
     studio_t buf;
     do
     {
-        system("clear");
+        system(CLEAR);
         printf("==================================================================================="
                "=\n");
         printf("*****************************************Ticket************************************"
                "*\n");
         printf("-----------------------------------------------------------------------------------"
                "-\n");
-        printf("Ticket ID          Scheuid ID         Seat ID       Price             Ticket "
+        printf("Ticket ID          Schedule ID         Seat ID       Price             Ticket "
                "Status\n");
         Paging_ViewPage_ForEach(ticket_list, paging, ticket_node_t, pos, i)
         {
@@ -237,43 +237,6 @@ int Sale_UI_ShowTicket(int schedule_id)
                paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
         Studio_Srv_FetchByID(studio_ID, &buf);
 
-        int xx = 0, yy = 1;
-        for (int i = 0; i <= buf.rowsCount; i++)
-        {
-            for (int j = 0; j <= buf.colsCount; j++)
-            {
-                if (i == 0)
-                    printf("%3d", xx++);
-                else if (j == 0)
-                    printf("%3d", yy++);
-                else
-                {
-                    int flag;
-                    flag = 0;
-                    List_ForEach(ticket_list, pos)
-                    {
-                        seat_node_t *buf1;
-                        buf1 = Seat_Srv_FindByID(list, pos->data.seat_id);
-                        if (buf1->data.row == i && buf1->data.column == j)
-                        {
-                            if (pos->data.status == 0)
-                            {
-                                printf("%3c", '#');
-                                flag = 1;
-                            }
-                            else
-                            {
-                                flag = 1;
-                                printf("   ");
-                            }
-                        }
-                    }
-                    if (!flag)
-                        printf("   ");
-                }
-            }
-            putchar('\n');
-        }
         printf("[N]ext | [P]rev | [S]ale Ticket | [R]eturn\n");
         printf("Your choice:");
         choice = getchar();
@@ -304,6 +267,7 @@ int Sale_UI_ShowTicket(int schedule_id)
         }
 
     } while (choice != 'R' && choice != 'r');
+    system(CLEAR);
     return 1;
 }
 
@@ -390,12 +354,12 @@ int Sale_UI_SellTicket(ticket_list_t list_t, seat_list_t list_s)
 
 void Sale_UI_ReturnTicket()
 {
-    if (gl_CurUser.type == USR_ADMIN)
-    {
-        printf("you can't join in there!please input the [Enter]");
-        getchar();
-        return;
-    }
+    // if (gl_CurUser.type == USR_ADMIN)
+    // {
+    //     printf("you can't join in there!please input the [Enter]");
+    //     getchar();
+    //     return;
+    // }
 
     int id;
     ticket_t buf;

@@ -73,7 +73,7 @@ void Play_UI_MgtEntry(void)
         printf("------- Total Records:%2d ----------------------- Page %2d/%2d ----\n",
                paging.totalRecords, Pageing_CurPage(paging), Pageing_TotalPages(paging));
         printf("******************************************************************\n");
-        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [S]chedule | [R]eturn");
+        printf("[P]revPage | [N]extPage | [A]dd | [D]elete | [U]pdate | [C]reate Ticket| [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
         scanf(" %c", &choice);
@@ -92,7 +92,7 @@ void Play_UI_MgtEntry(void)
             break;
         case 'd':
         case 'D':
-            system(CLEAR);
+            // system(CLEAR);
             printf("Input the play ID to delete: ");
             scanf("%d", &id);
             clear_input_buffer();
@@ -114,8 +114,8 @@ void Play_UI_MgtEntry(void)
                 List_Paging(list, paging, play_node_t);
             }
             break;
-        case 's':
-        case 'S':
+        case 'c':
+        case 'C':
             // system(CLEAR);
             printf("Input the play ID to schedule: ");
             scanf("%d", &id);
@@ -179,6 +179,9 @@ int Play_UI_Add(void)
     if (Play_Srv_Add(&data))
     {
         printf("Play added successfully! ID=%d\n", data.id);
+        printf("Please enter any key to continue...\n");
+        getchar();
+        system(CLEAR);
         return 1;
     }
 
@@ -245,6 +248,9 @@ int Play_UI_Delete(int id)
     if (Play_Srv_DeleteByID(id))
     {
         printf("Play deleted successfully.\n");
+        printf("Please enter any key to continue...");
+        getchar();
+        system(CLEAR);
         return 1;
     }
 
