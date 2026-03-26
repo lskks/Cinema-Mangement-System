@@ -215,7 +215,7 @@ void Account_UI_MgtEntry()
             break;
         case 'd':
         case 'D':
-            system(CLEAR);
+            // system(CLEAR);
             printf("Input the user name you want to delete: ");
             scanf("%s", name);
             if (Account_UI_Delete(list, name))

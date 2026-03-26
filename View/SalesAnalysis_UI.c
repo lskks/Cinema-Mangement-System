@@ -63,7 +63,6 @@ void SalesAnalysis_UI_MgtEntry(void) {
         printf("[P]revPage | [N]extPage | [R]eturn");
         printf("\n==================================================================\n");
         printf("Your Choice:");
-        clear_input_buffer();
         scanf("%c", &choice);
         clear_input_buffer();
         // g) 接收用户输入的按键字符
@@ -71,6 +70,7 @@ void SalesAnalysis_UI_MgtEntry(void) {
         case 'p':
         case 'P':
             // h) 显示上一页
+            system(CLEAR);
             if (!Pageing_IsFirstPage(paging)) {
                 Paging_Locate_OffsetPage(list, paging, -1, salesanalysis_node_t);
             }
@@ -78,6 +78,7 @@ void SalesAnalysis_UI_MgtEntry(void) {
             case 'n':
             case 'N':
             // i) 显示下一页
+            system(CLEAR);
             if (!Pageing_IsLastPage(paging)) {
                 Paging_Locate_OffsetPage(list, paging, 1, salesanalysis_node_t);
             }

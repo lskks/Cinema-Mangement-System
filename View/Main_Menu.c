@@ -74,6 +74,9 @@ void Main_Menu(void)
             system(CLEAR);
             if (SysLogin())
             {
+                printf("Please enter any key to continue...");
+                getchar();
+                system(CLEAR);
                 SalesAnalysis_UI_MgtEntry();
             }
             break;
@@ -82,6 +85,9 @@ void Main_Menu(void)
             system(CLEAR);
             if (SysLogin())
             {
+                printf("Please enter any key to continue...");
+                getchar();
+                system(CLEAR);
                 Account_UI_MgtEntry();
             }
             break;

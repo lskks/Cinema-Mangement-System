@@ -85,7 +85,7 @@ void Sale_UI_MgtEntry()
         printf("please input your choice : ");
         setbuf(stdin, NULL);
         scanf("%c", &choice);
-        getchar();
+        clear_input_buffer();
         switch (choice)
         {
         case 'c':
@@ -97,7 +97,7 @@ void Sale_UI_MgtEntry()
             break;
         case 's':
         case 'S':
-            printf("please input the Play_ name :");
+            printf("please input the play name :");
             setbuf(stdin, NULL);
             scanf("%19s", name);
             clear_input_buffer();
@@ -173,7 +173,7 @@ void Sale_UI_ShowScheduler(int play_id)
         printf("Your choice : ");
 
         scanf("%c", &choice);
-        getchar();
+        clear_input_buffer();
 
         switch (choice)
         {
@@ -381,28 +381,40 @@ void Sale_UI_ReturnTicket()
     scanf("%d", &id);
     if (Ticket_Srv_FetchByTicketID(id, &buf) == 1)
     {
-        if (buf.status == TICKET_AVL)
+        if (buf.status == TICKET_SOLD)
         {
-            buf.status = TICKET_SOLD;
+            buf.status = TICKET_AVL;
             Ticket_Srv_Modify(&buf); 
 
             refound.ticket_id = buf.id;
-            refound.value = buf.price;
+            refound.value = -buf.price;
             refound.type = -1;
-            struct tm *p;
-            time_t timep;
-            time(&timep);
-            p = localtime(&timep);
-            refound.date.year = p->tm_year + 1900;
-            refound.date.month = p->tm_mon + 1;
-            refound.date.day = p->tm_mday;
-            refound.time.hour = p->tm_hour;
-            refound.time.minute = p->tm_min;
-            refound.time.second = p->tm_sec;
-            printf("please input Salesperson ID:");
+            user_time_t time = TimeNow();
+            user_date_t date = DateNow();
+            refound.date.year = date.year;
+            refound.date.month = date.month;
+            refound.date.day = date.day;
+            refound.time.hour = time.hour;
+            refound.time.minute = time.minute;
+            refound.time.second = time.second;
+            printf("please input Sales Person ID:");
             scanf("%d", &refound.user_id);
-            getchar();
-            Sale_Srv_Add(&refound);
+            // getchar();
+            clear_input_buffer();
+            if (Sale_Srv_Add(&refound))
+            {
+                printf("Ticket returned successfully!\n");
+                printf("Please enter any key to continue...");
+                getchar();
+                system(CLEAR);
+            }
+            else
+            {
+                printf("Failed to return ticket.\n");
+                printf("Please enter any key to continue...");
+                getchar();
+                system(CLEAR);
+            }
         }
         else
         {

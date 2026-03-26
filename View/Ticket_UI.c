@@ -44,17 +44,19 @@ void Ticket_UI_MgtEntry(int schedule_id)
     Play_Srv_FetchByID(buf.play_id, &data);
 
     printf("=======================================================================\n");
-
+    
     printf("Name          Stduio ID                Date                  Time       \n");
     printf("%s                 %d             %d.%d.%d               %d:%d:%d\n", data.name,
-           buf.studio_id, buf.date.year, buf.date.month, buf.date.day, buf.time.hour,
-           buf.time.minute, buf.time.second);
-
-    printf("[G]enerating tickets | [R]eproduction of tickets | [Q]uery Tickets\n");
+        buf.studio_id, buf.date.year, buf.date.month, buf.date.day, buf.time.hour,
+        buf.time.minute, buf.time.second);
+    
+    printf("-----------------------------------------------------------------------");
+    printf("[G]enerating tickets | [R]eproduction of tickets | [Q]uery Tickets | [E]xit\n");
+    printf("=======================================================================\n");
     setbuf(stdin, NULL);
     printf("Your choice:");
     scanf("%c", &choice);
-    getchar();
+    clear_input_buffer();
 
     switch (choice)
     {
@@ -103,6 +105,10 @@ void Ticket_UI_MgtEntry(int schedule_id)
     case 'Q':
         Ticket_UI_Query();
         break;
+        case 'e':
+        case 'E':
+            return;
+        
     }
 }
 
@@ -145,6 +151,7 @@ void Ticket_UI_Query(void)
     }
     else if (mode == 'r' || mode == 'R')
     {
+        system(CLEAR);
         return;
     }
 }

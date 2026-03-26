@@ -6,6 +6,7 @@ typedef enum
 {
 	TICKET_AVL = 0,   
 	TICKET_SOLD = 1,
+	TICKET_RETURN = 2,
 	TICKET_RESV = 9 
 }ticket_status_t;
 
